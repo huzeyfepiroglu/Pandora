@@ -1,0 +1,8 @@
+../Core/Src/cocking_handle_maingun.c:37:6:maingunCockingMotorDrive	16	static
+../Core/Src/cocking_handle_maingun.c:55:6:maingunCockingMotorBrake	16	static
+../Core/Src/cocking_handle_maingun.c:68:6:maingunCockingMotorStop	8	static
+../Core/Src/cocking_handle_maingun.c:76:6:maingunCockingHandleGoHome	8	static
+../Core/Src/cocking_handle_maingun.c:93:6:maingunCockingHandleGoSafe	8	static
+../Core/Src/cocking_handle_maingun.c:124:6:maingunCockingHandleGoArm	8	static
+../Core/Src/cocking_handle_maingun.c:170:6:maingunCountEncoderPulse	16	static
+../Core/Src/cocking_handle_maingun.c:178:6:maingunEncoderRead	24	static
