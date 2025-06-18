@@ -60,8 +60,8 @@ all: main-build
 main-build: Pandora.elf secondary-outputs
 
 # Tool invocations
-Pandora.elf Pandora.map: $(OBJS) $(USER_OBJS) C:\Users\ADMIN\Desktop\New\ folder\Pandora\STM32H743ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "Pandora.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\ADMIN\Desktop\New folder\Pandora\STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Pandora.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+Pandora.elf Pandora.map: $(OBJS) $(USER_OBJS) C:\Users\ADMIN\git\Pandora\Pandora\STM32H743ZITX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "Pandora.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m7 -T"C:\Users\ADMIN\git\Pandora\Pandora\STM32H743ZITX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Pandora.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv5-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 

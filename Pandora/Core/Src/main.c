@@ -122,9 +122,9 @@ int main(void)
   MX_UART8_Init();
   MX_TIM3_Init();
   /* USER CODE BEGIN 2 */
-  HAL_ADC_Start_DMA(&hadc1, (uint32_t *)pandora.analogDigitalConverter.hadc1Buffer, 1);
-  HAL_ADC_Start_DMA(&hadc2, (uint32_t *)pandora.analogDigitalConverter.hadc2Buffer, 1);
-  HAL_ADC_Start_DMA(&hadc3, (uint32_t *)pandora.analogDigitalConverter.hadc3Buffer, 1);
+  HAL_ADC_Start_DMA(&hadc1, pandora.analogDigitalConverter.hadc1Buffer, 1);
+  HAL_ADC_Start_DMA(&hadc2, pandora.analogDigitalConverter.hadc2Buffer, 1);
+  HAL_ADC_Start_DMA(&hadc3, pandora.analogDigitalConverter.hadc3Buffer, 1);
 
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   __HAL_TIM_SET_COUNTER(&htim3,0);

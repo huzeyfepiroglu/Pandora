@@ -14,88 +14,88 @@ void function_errorCheck (void)
 	/************************SOLENOID_BEGIN**************************/
 	if(pandora.powerManagement.solenoidCurrent > AMPER_5)
 	{
-		pandora.CIT.errorSolenoidCurrent = true;
+		pandora.powerManagement.errorSolenoidCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorSolenoidCurrent = false;
+		pandora.powerManagement.errorSolenoidCurrent = false;
 	}
 	/************************SOLENOID_END****************************/
 
 	/*********************COCKING_HANDLE_BEGIN***********************/
 	if(pandora.powerManagement.cockingHandleCurrent > AMPER_5)
 	{
-		pandora.CIT.errorCockingHandleCurrent = true;
+		pandora.powerManagement.errorCockingHandleCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorCockingHandleCurrent = false;
+		pandora.powerManagement.errorCockingHandleCurrent = false;
 	}
 	/*********************COCKING_HANDLE_END*************************/
 
 	/************************HERCULE_BEGIN***************************/
 	if(pandora.powerManagement.servoCurrent > AMPER_5)
 	{
-		pandora.CIT.errorHerculeCurrent = true;
+		pandora.powerManagement.errorHerculeCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorHerculeCurrent = false;
+		pandora.powerManagement.errorHerculeCurrent = false;
 	}
 	/************************HERCULE_END*****************************/
 
 	/**************************KKU_BEGIN*****************************/
 	if(pandora.powerManagement.KKUCurrent > AMPER_5)
 	{
-		pandora.CIT.errorKKUCurrent = true;
+		pandora.powerManagement.errorKKUCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorKKUCurrent = false;
+		pandora.powerManagement.errorKKUCurrent = false;
 	}
 	/**************************KKU_END*******************************/
 
 	/**************************AKB_BEGIN*****************************/
 	if(pandora.powerManagement.AKBCurrent > AMPER_5)
 	{
-		pandora.CIT.errorAKBCurrent = true;
+		pandora.powerManagement.errorAKBCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorAKBCurrent = false;
+		pandora.powerManagement.errorAKBCurrent = false;
 	}
 	/**************************AKB_END*******************************/
 
 	/**************************GDB_BEGIN*****************************/
 	if(pandora.powerManagement.GDBCurrent > AMPER_5)
 	{
-		pandora.CIT.errorGDBCurrent = true;
+		pandora.powerManagement.errorGDBCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorGDBCurrent = false;
+		pandora.powerManagement.errorGDBCurrent = false;
 	}
 	/**************************GDB_END*******************************/
 
 	/**************************EOS_BEGIN*****************************/
 	if(pandora.powerManagement.EOSCurrent > AMPER_5)
 	{
-		pandora.CIT.errorEOSCurrent = true;
+		pandora.powerManagement.errorEOSCurrent = true;
 	}
 	else
 	{
-		pandora.CIT.errorEOSCurrent = false;
+		pandora.powerManagement.errorEOSCurrent = false;
 	}
 	/**************************EOS_END*******************************/
 
 	/************************BATTERY_BEGIN***************************/
 	if(pandora.powerManagement.batteryVoltage < VOLTAGE_22)
 	{
-		pandora.CIT.errorBatteryVoltage = true;
+		pandora.powerManagement.errorBatteryVoltage = true;
 	}
 	else
 	{
-		pandora.CIT.errorBatteryVoltage = false;
+		pandora.powerManagement.errorBatteryVoltage = false;
 	}
 	/************************BATTERY_END***************************/
 }
