@@ -161,21 +161,26 @@ typedef struct
 
 	struct
 	{
-		uint8_t solenoidActiveTime;
-		uint8_t solenoidPassiveTime;
+		uint8_t fastRpm;								//OKEY
+		uint8_t slowRpm;								//OKEY
+		uint8_t solenoidTime;							//OKEY
+		uint8_t solenoidActiveTime;						//OKEY
+		uint8_t solenoidPassiveTime;					//OKEY
+		uint8_t fireMode;								//OKEY
 
-	    uint16_t rpm;               // 600 RPM = 100ms
-	    uint16_t pulseTime_ms;      // Solenoid açık süresi
-	    uint8_t fireMode;
-	    uint8_t remainingShots;
-	    uint8_t firing;
-	    uint16_t pin;
-	    uint8_t state;
-	    uint32_t stateStartTime;    // Zaman takip
 
 	}configurations;
 
 }gun;
+
+typedef struct
+{
+	bool solenoidActive;
+	bool triggerHeld;
+	uint32_t changeTime;
+	uint16_t burstCounter;
+	uint32_t ammoCounter;
+}states;
 
 typedef struct
 {
@@ -231,6 +236,7 @@ typedef struct
 typedef struct
 {
 	gun	gun;
+	states states;
 	switches switches;
 	canMessages canMessages;
 	powerManagement powerManagement;

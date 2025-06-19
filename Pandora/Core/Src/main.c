@@ -130,6 +130,8 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   __HAL_TIM_SET_COUNTER(&htim3,0);
 
+  gunControl_Init();
+  gunControl_SetMode(FIRE_MODE_SINGLE);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -151,14 +153,15 @@ int main(void)
 
 
 
-	  if(_1msFlag)
-	  {
-		  Gun_TimerUpdate();
-	  }
+	  gunControl_Process(HAL_GetTick());
 
 	  if(switchesArray[FIRE_ORDER_SWITCH].state)
 	  {
-		  Gun_StartFiring();
+		  gunControl_TriggerPressed();
+	  }
+	  else
+	  {
+		  gunControl_TriggerReleased();
 	  }
 	  //maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
 	  //pandora.maingunEncoder.maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);

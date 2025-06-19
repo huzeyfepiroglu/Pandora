@@ -24,19 +24,10 @@ typedef enum {
     FIRE_MODE_SLOW_BURST_5
 } FireMode_t;
 
-// Global parametreler
-extern uint16_t HIZLI_RPM;
-extern uint16_t YAVAS_RPM;
-extern uint16_t SOLENOID_ACILMA_SURESI;   // ms
-extern uint16_t SOLENOID_AKTIF_SURESI;    // ms
-extern uint16_t SOLENOID_PASIF_SURESI;    // ms
-
-extern volatile uint32_t boncuk_sayaci;
-
-void Gun_Init(void);
-void Gun_SetMode(FireMode_t mode);
-void Gun_TriggerPressed(void);
-void Gun_TriggerReleased(void);
-void Gun_Process(uint32_t now_ms);
+void gunControl_Init(void);
+void gunControl_SetMode(FireMode_t mode);
+void gunControl_TriggerPressed(void);
+void gunControl_TriggerReleased(void);
+void gunControl_Process(uint32_t now_ms);
 
 #endif /* INC_GUN_CONTROL_H_ */
