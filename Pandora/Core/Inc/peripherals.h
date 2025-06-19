@@ -40,6 +40,9 @@
 #define MOTOR_CONTROL(mosfet, action)  \
     HAL_GPIO_WritePin(mosfet##_GPIO_Port, mosfet##_Pin, (action == ON) ? GPIO_PIN_SET : GPIO_PIN_RESET)
 
+#define SOLENOID(mosfet, action)  \
+    HAL_GPIO_WritePin(mosfet##_GPIO_Port, mosfet##_Pin, (action == ON) ? GPIO_PIN_SET : GPIO_PIN_RESET)
+
 #define FEEDBACK_READ(device)  \
     (HAL_GPIO_ReadPin(device##_GPIO_Port, device##_Pin) == GPIO_PIN_SET ? HIGH : LOW)
 

@@ -31,6 +31,7 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "definitions.h"
+#include "timing.h"
 #include "peripherals.h"
 #include "can_messages.h"
 #include "cocking_handle_maingun.h"
@@ -138,17 +139,27 @@ int main(void)
     /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
-	  //deneme
-	  //deneme2
-	  //deneme3
-	  //deneme4
-	  //deneme5
-	  //canBusSendVersion();
-	  //setBootloaderMode();
-	  //gunActivePassing();
-	  maingunEncoderRead(&htim3);
+	  startTimeScanFlags();
 
+	  maingunEncoderRead(&htim3);
+	  functionMeasure();
 	  function_errorCheck();
+
+
+
+
+
+
+
+	  if(_1msFlag)
+	  {
+		  Gun_TimerUpdate();
+	  }
+
+	  if(switchesArray[FIRE_ORDER_SWITCH].state)
+	  {
+		  Gun_StartFiring();
+	  }
 	  //maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
 	  //pandora.maingunEncoder.maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
 	  //pandora.maingun.encoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
@@ -156,6 +167,7 @@ int main(void)
 
 	  //FDCAN_SendMessage(&hfdcan1, 0x100,(uint8_t *)&(pandora.canMessages.maingunCockingHandle), 8);
 	  HAL_Delay(10);
+	  clearTimeScanFlags();
 
   }
   /* USER CODE END 3 */

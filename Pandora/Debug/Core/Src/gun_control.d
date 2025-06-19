@@ -1,5 +1,5 @@
 Core/Src/gun_control.o: ../Core/Src/gun_control.c \
- ../Core/Inc/gun_control.h ../Core/Inc/peripherals.h ../Core/Inc/main.h \
+ ../Core/Inc/peripherals.h ../Core/Inc/main.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h \
  ../Core/Inc/stm32h7xx_hal_conf.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_rcc.h \
@@ -38,8 +38,7 @@ Core/Src/gun_control.o: ../Core/Src/gun_control.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/fdcan.h ../Core/Inc/definitions.h
-../Core/Inc/gun_control.h:
+ ../Core/Inc/fdcan.h ../Core/Inc/definitions.h ../Core/Inc/gun_control.h
 ../Core/Inc/peripherals.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -82,3 +81,4 @@ Core/Src/gun_control.o: ../Core/Src/gun_control.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/fdcan.h:
 ../Core/Inc/definitions.h:
+../Core/Inc/gun_control.h:

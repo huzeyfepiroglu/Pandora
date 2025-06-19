@@ -1,1 +1,6 @@
-../Core/Src/gun_control.c:35:6:checkGunType	16	static
+../Core/Src/gun_control.c:35:17:get_shot_interval	16	static
+../Core/Src/gun_control.c:40:6:Gun_Init	8	static
+../Core/Src/gun_control.c:49:6:Gun_SetMode	16	static
+../Core/Src/gun_control.c:54:6:Gun_TriggerPressed	8	static
+../Core/Src/gun_control.c:72:6:Gun_TriggerReleased	8	static
+../Core/Src/gun_control.c:80:6:Gun_Process	32	static

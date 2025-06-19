@@ -126,19 +126,17 @@ typedef struct
 	uint8_t gunID;
 	uint8_t gunType;
 
-	union {
-	    struct {
-	    	uint8_t gunMK19 	: 1;
-	        uint8_t gunMAKS40 	: 1;
-	        uint8_t gun556 		: 1;
-	        uint8_t gun762 		: 1;
-	        uint8_t bit4 		: 1;
-	        uint8_t bit5 		: 1;
-	        uint8_t bit6 		: 1;
-	        uint8_t bit7 		: 1;
-	    } ;
-	    uint8_t value;
-	} mode;
+//	struct {
+//	    uint16_t rpm;               // 600 RPM = 100ms
+//	    uint16_t pulseTime_ms;      // Solenoid açık süresi
+//	    FireMode mode;
+//	    uint8_t remainingShots;
+//	    uint8_t firing;
+//	    GPIO_TypeDef *port;
+//	    uint16_t pin;
+//	    GunState state;
+//	    uint32_t stateStartTime;    // Zaman takip
+//	} GunControl;
 
 	struct
 	{
@@ -165,6 +163,15 @@ typedef struct
 	{
 		uint8_t solenoidActiveTime;
 		uint8_t solenoidPassiveTime;
+
+	    uint16_t rpm;               // 600 RPM = 100ms
+	    uint16_t pulseTime_ms;      // Solenoid açık süresi
+	    uint8_t fireMode;
+	    uint8_t remainingShots;
+	    uint8_t firing;
+	    uint16_t pin;
+	    uint8_t state;
+	    uint32_t stateStartTime;    // Zaman takip
 
 	}configurations;
 
