@@ -1,0 +1,8 @@
+../Core/Src/can_messages.c:14:6:prepareSendPackages	4	static
+../Core/Src/can_messages.c:49:6:sendCanMessages	4	static
+../Core/Src/can_messages.c:180:19:FDCAN_SendMessage	64	static
+../Core/Src/can_messages.c:196:19:FDCAN_ReceiveMessage	64	static
+../Core/Src/can_messages.c:210:6:eventKKU	16	static
+../Core/Src/can_messages.c:219:6:eventAKB	24	static
+../Core/Src/can_messages.c:272:6:eventEOS	16	static
+../Core/Src/can_messages.c:279:6:eventHERCULE	16	static

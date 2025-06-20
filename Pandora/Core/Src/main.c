@@ -155,7 +155,7 @@ int main(void)
 
 	  gunControl_Process(HAL_GetTick());
 
-	  if(switchesArray[FIRE_ORDER_SWITCH].state)
+	  if(pandora.switches.switches_fire_order)
 	  {
 		  gunControl_TriggerPressed();
 	  }

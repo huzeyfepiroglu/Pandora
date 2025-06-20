@@ -60,7 +60,7 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pin Output Level */
   HAL_GPIO_WritePin(GPIOD, EOS_POWER_Pin|SERVO_POWER_Pin|AKB_POWER_Pin|KKU_POWER_Pin
-                          |BRAKE_DRV_12V_Pin|BRAKE_DRV_28V_Pin|EMERGENCY_STOP_RESET_Pin|SYSTEM_ON_OFF_Pin, GPIO_PIN_RESET);
+                          |BRAKE_DRV_12V_Pin|BRAKE_DRV_28V_Pin|EMERGENCY_STOP_RESET_Pin|SYSTEM_ON_OFFD5_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PGPin PGPin PGPin PGPin
                            PGPin PGPin PGPin PGPin */
@@ -81,7 +81,7 @@ void MX_GPIO_Init(void)
   /*Configure GPIO pins : PDPin PDPin PDPin PDPin
                            PDPin PDPin PDPin PDPin */
   GPIO_InitStruct.Pin = EOS_POWER_Pin|SERVO_POWER_Pin|AKB_POWER_Pin|KKU_POWER_Pin
-                          |BRAKE_DRV_12V_Pin|BRAKE_DRV_28V_Pin|EMERGENCY_STOP_RESET_Pin|SYSTEM_ON_OFF_Pin;
+                          |BRAKE_DRV_12V_Pin|BRAKE_DRV_28V_Pin|EMERGENCY_STOP_RESET_Pin|SYSTEM_ON_OFFD5_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
@@ -89,16 +89,16 @@ void MX_GPIO_Init(void)
 
   /*Configure GPIO pins : PDPin PDPin PDPin PDPin
                            PDPin PDPin */
-  GPIO_InitStruct.Pin = EMERGENCY_STOP_FEEDBACK_Pin|SYSTEM_ON_OFF_FEEDBACK_Pin|SWITCHES_FIRE_FEEDBACK_Pin|SWITCHES_SAFETY_FEEDBACK_Pin
-                          |SWITCHES_COCKING_HANDLE_HOME_Pin|SWITCHES_2_Pin;
+  GPIO_InitStruct.Pin = EMERGENCY_STOP_FEEDBACK_Pin|SYSTEM_ON_OFF_Pin|SWITCHES_FIRE_ORDER_Pin|SWITCHES_SAFETY_Pin
+                          |SWITCHES_COCKING_HANDLE_ORDER_Pin|SWITCHES_MOVEMENT_ALLOWED_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOD, &GPIO_InitStruct);
 
   /*Configure GPIO pins : PGPin PGPin PGPin PGPin
                            PGPin */
-  GPIO_InitStruct.Pin = SWITCHES_SMGA_Pin|SWITCHES_4_Pin|SWITCHES_5_Pin|SWITCHES_6_Pin
-                          |SWITCHES_7_Pin;
+  GPIO_InitStruct.Pin = SWITCHES_SMGA_Pin|SWITCHES_SYSTEM_ON_OFF_Pin|SWITCHES_CREW_1_Pin|SWITCHES_CREW_2_Pin
+                          |SWITCHES_COCKING_HANDLE_HOME_Pin;
   GPIO_InitStruct.Mode = GPIO_MODE_IT_RISING;
   GPIO_InitStruct.Pull = GPIO_NOPULL;
   HAL_GPIO_Init(GPIOG, &GPIO_InitStruct);

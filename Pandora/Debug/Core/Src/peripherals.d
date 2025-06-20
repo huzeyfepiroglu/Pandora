@@ -38,7 +38,7 @@ Core/Src/peripherals.o: ../Core/Src/peripherals.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/fdcan.h
+ ../Core/Inc/fdcan.h ../Core/Inc/definitions.h
 ../Core/Inc/peripherals.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -80,3 +80,4 @@ Core/Src/peripherals.o: ../Core/Src/peripherals.c \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/fdcan.h:
+../Core/Inc/definitions.h:

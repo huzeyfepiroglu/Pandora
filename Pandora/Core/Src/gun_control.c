@@ -73,7 +73,7 @@ void gunControl_Process(uint32_t now)
     switch (pandora.gun.configurations.fireMode)
     {
         case FIRE_MODE_SINGLE:
-            if (pandora.states.solenoidActive && now - pandora.states.changeTime >= SOLENOID_ACILMA_SURESI)
+            if (pandora.states.solenoidActive && now - pandora.states.changeTime >= pandora.gun.configurations.solenoidTime)
             {
             	SOLENOID(SOLENOID_DRV_1,OFF);
                 pandora.states.solenoidActive = false;
@@ -82,14 +82,14 @@ void gunControl_Process(uint32_t now)
             break;
 
         case FIRE_MODE_FAST_AUTO:
-            if (pandora.states.solenoidActive && now - pandora.states.changeTime >= SOLENOID_AKTIF_SURESI)
+            if (pandora.states.solenoidActive && now - pandora.states.changeTime >= pandora.gun.configurations.solenoidActiveTime)
             {
             	SOLENOID(SOLENOID_DRV_1,OFF);
                 pandora.states.solenoidActive = false;
                 pandora.states.ammoCounter++;
                 pandora.states.changeTime = now;
             }
-            else if (!pandora.states.solenoidActive && now - pandora.states.changeTime >= SOLENOID_PASIF_SURESI)
+            else if (!pandora.states.solenoidActive && now - pandora.states.changeTime >= pandora.gun.configurations.solenoidPassiveTime)
             {
             	SOLENOID(SOLENOID_DRV_1,ON);
                 pandora.states.solenoidActive = true;
@@ -101,7 +101,7 @@ void gunControl_Process(uint32_t now)
         case FIRE_MODE_FAST_BURST_5:
         {
             uint8_t target = (pandora.gun.configurations.fireMode == FIRE_MODE_FAST_BURST_3) ? 3 : 5;
-            uint32_t burst_duration = gunControl_getShotInterval(HIZLI_RPM) * target;
+            uint32_t burst_duration = gunControl_getShotInterval(pandora.gun.configurations.fastRpm) * target;
 
             if (pandora.states.solenoidActive && now - pandora.states.changeTime >= burst_duration)
             {
@@ -113,13 +113,13 @@ void gunControl_Process(uint32_t now)
         }
 
         case FIRE_MODE_SLOW_AUTO:
-            if (!pandora.states.solenoidActive && now - pandora.states.changeTime >= gunControl_getShotInterval(YAVAS_RPM))
+            if (!pandora.states.solenoidActive && now - pandora.states.changeTime >= gunControl_getShotInterval(pandora.gun.configurations.slowRpm))
             {
             	SOLENOID(SOLENOID_DRV_1,ON);
                 pandora.states.solenoidActive = true;
                 pandora.states.changeTime = now;
             }
-            else if (pandora.states.solenoidActive && now - pandora.states.changeTime >= SOLENOID_ACILMA_SURESI)
+            else if (pandora.states.solenoidActive && now - pandora.states.changeTime >= pandora.gun.configurations.solenoidTime)
             {
             	SOLENOID(SOLENOID_DRV_1,OFF);
                 pandora.states.solenoidActive = false;
@@ -134,13 +134,13 @@ void gunControl_Process(uint32_t now)
             uint8_t target = (pandora.gun.configurations.fireMode == FIRE_MODE_SLOW_BURST_3) ? 3 : 5;
             if (pandora.states.burstCounter >= target) break;
 
-            if (!pandora.states.solenoidActive && now - pandora.states.changeTime >= gunControl_getShotInterval(YAVAS_RPM))
+            if (!pandora.states.solenoidActive && now - pandora.states.changeTime >= gunControl_getShotInterval(pandora.gun.configurations.slowRpm))
             {
             	SOLENOID(SOLENOID_DRV_1,ON);
                 pandora.states.solenoidActive = true;
                 pandora.states.changeTime = now;
             }
-            else if (pandora.states.solenoidActive && now - pandora.states.changeTime >= SOLENOID_ACILMA_SURESI)
+            else if (pandora.states.solenoidActive && now - pandora.states.changeTime >= pandora.gun.configurations.solenoidTime)
             {
             	SOLENOID(SOLENOID_DRV_1,OFF);
                 pandora.states.solenoidActive = false;

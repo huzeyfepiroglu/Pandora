@@ -132,7 +132,7 @@
 #define SWITCHES_SAFETY_FEEDBACK
 #define SWITCHES_COCKING_HANDLE
 #define SWITCHES_SMGA
-#define SWITCHES_2
+#define SWITCHES_COCKING_HANDLE_HOME
 #define SWITCHES_4
 #define SWITCHES_5
 #define SWITCHES_6
@@ -147,30 +147,6 @@
 ///////
 
 
-
-//	FOR DEBOUNCE BEGIN
-#define DEBOUNCE_DELAY_MS 1
-
-typedef struct {
-    GPIO_TypeDef* port;         // Butonun bağlı olduğu GPIO portu (örneğin GPIOA)
-    uint16_t pin;               // Butonun bağlı olduğu pin (örneğin GPIO_PIN_0)
-    uint8_t state;              // Son bilinen buton durumu (HIGH veya LOW)
-    uint32_t lastChangeTime;    // En son buton durumu değişim zamanı (debounce için)
-} Switches_t;
-
-typedef enum {
-    FIRE_SAFETY_SWITCH = 0,
-	COCKING_HANDLE_SWITCH,
-	MOVEMENT_SWITCH,
-	FIRE_ORDER_SWITCH,
-	SYSTEM_ON_OFF_SWITCH,
-	SMGA_SWITCH,
-	CREW_1_SWITCH,
-	CREW_2_SWITCH,
-	CREW_3_SWITCH,
-	SWITCHES_COUNT
-} Switches;
-//	FOR DEBOUNCE END
 
 
 #endif /* PERIPHERALS_H_ */

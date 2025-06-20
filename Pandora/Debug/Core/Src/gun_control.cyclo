@@ -1,6 +1,6 @@
-../Core/Src/gun_control.c:35:17:get_shot_interval	1
-../Core/Src/gun_control.c:40:6:Gun_Init	1
-../Core/Src/gun_control.c:49:6:Gun_SetMode	1
-../Core/Src/gun_control.c:54:6:Gun_TriggerPressed	4
-../Core/Src/gun_control.c:72:6:Gun_TriggerReleased	1
-../Core/Src/gun_control.c:80:6:Gun_Process	27
+../Core/Src/gun_control.c:15:17:gunControl_getShotInterval	1
+../Core/Src/gun_control.c:20:6:gunControl_Init	1
+../Core/Src/gun_control.c:38:6:gunControl_SetMode	1
+../Core/Src/gun_control.c:43:6:gunControl_TriggerPressed	4
+../Core/Src/gun_control.c:61:6:gunControl_TriggerReleased	1
+../Core/Src/gun_control.c:69:6:gunControl_Process	27

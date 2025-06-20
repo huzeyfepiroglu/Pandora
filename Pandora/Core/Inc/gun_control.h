@@ -13,17 +13,6 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-// Atış Modları
-typedef enum {
-    FIRE_MODE_SINGLE,
-    FIRE_MODE_FAST_AUTO,
-    FIRE_MODE_FAST_BURST_3,
-    FIRE_MODE_FAST_BURST_5,
-    FIRE_MODE_SLOW_AUTO,
-    FIRE_MODE_SLOW_BURST_3,
-    FIRE_MODE_SLOW_BURST_5
-} FireMode_t;
-
 void gunControl_Init(void);
 void gunControl_SetMode(FireMode_t mode);
 void gunControl_TriggerPressed(void);

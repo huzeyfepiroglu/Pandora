@@ -75,7 +75,7 @@ void maingunCockingMotorStop(void)
 
 void maingunCockingHandleGoHome (void)
 {
-	if(!SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(!pandora.switches.switches_cocking_handle_home)
 	{
 		maingunCockingMotorBrake(OFF);
 
@@ -83,7 +83,7 @@ void maingunCockingHandleGoHome (void)
 		{
 			maingunCockingMotorDrive(BACKWARD);
 		}
-		while(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME));
+		while(pandora.switches.switches_cocking_handle_home);
 
 		maingunCockingMotorStop();
 		maingunCockingMotorBrake(ON);
@@ -92,7 +92,7 @@ void maingunCockingHandleGoHome (void)
 
 void maingunCockingHandleGoSafe (void)
 {
-	if(!SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(!pandora.switches.switches_cocking_handle_home)
 	{
 		maingunCockingMotorBrake(OFF);
 
@@ -100,13 +100,13 @@ void maingunCockingHandleGoSafe (void)
 		{
 			maingunCockingMotorDrive(BACKWARD);
 		}
-		while(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME));
+		while(pandora.switches.switches_cocking_handle_home);
 
 		maingunCockingMotorStop();
 		maingunCockingMotorBrake(ON);
 	}
 
-	if(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(pandora.switches.switches_cocking_handle_home)
 	{
 		maingunCockingMotorBrake(OFF);
 
@@ -123,7 +123,7 @@ void maingunCockingHandleGoSafe (void)
 
 void maingunCockingHandleGoArm (void)
 {
-	if(!SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(!pandora.switches.switches_cocking_handle_home)
 	{
 		maingunCockingMotorBrake(OFF);
 
@@ -131,13 +131,13 @@ void maingunCockingHandleGoArm (void)
 		{
 			maingunCockingMotorDrive(BACKWARD);
 		}
-		while(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME));
+		while(pandora.switches.switches_cocking_handle_home);
 
 		maingunCockingMotorStop();
 		maingunCockingMotorBrake(ON);
 	}
 
-	if(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(pandora.switches.switches_cocking_handle_home)
 	{
 		maingunCockingMotorBrake(OFF);
 
@@ -151,7 +151,7 @@ void maingunCockingHandleGoArm (void)
 		maingunCockingMotorBrake(ON);
 	}
 
-	if(!SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(!pandora.switches.switches_cocking_handle_home)
 	{
 		maingunCockingMotorBrake(OFF);
 
@@ -159,7 +159,7 @@ void maingunCockingHandleGoArm (void)
 		{
 			maingunCockingMotorDrive(BACKWARD);
 		}
-		while(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME));
+		while(pandora.switches.switches_cocking_handle_home);
 
 
 		maingunCockingMotorStop();
@@ -180,7 +180,7 @@ void maingunEncoderRead(TIM_HandleTypeDef *htim)
 	int32_t currentCount = __HAL_TIM_GET_COUNTER(htim);
 	int32_t difference = currentCount - lastCount;
 
-	if(SWITCH_READ(SWITCHES_COCKING_HANDLE_HOME))
+	if(pandora.switches.switches_cocking_handle_home)
 	{
 		currentCount = 0;
 	}

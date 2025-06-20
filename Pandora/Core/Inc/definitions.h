@@ -32,6 +32,26 @@
 
 #define VOLTAGE_22	22
 
+//	FOR DEBOUNCE BEGIN
+#define DEBOUNCE_DELAY_MS 1
+
+
+
+
+
+//	FOR DEBOUNCE END
+
+// Atış Modları
+typedef enum {
+    FIRE_MODE_SINGLE,
+    FIRE_MODE_FAST_AUTO,
+    FIRE_MODE_FAST_BURST_3,
+    FIRE_MODE_FAST_BURST_5,
+    FIRE_MODE_SLOW_AUTO,
+    FIRE_MODE_SLOW_BURST_3,
+    FIRE_MODE_SLOW_BURST_5
+} FireMode_t;
+
 typedef union {
     struct {
     	uint8_t bit0 : 1;
@@ -108,23 +128,86 @@ typedef struct
 
 	struct
 	{
-		// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
-		uint8_t byte_0;
-		uint8_t byte_1;
-		uint8_t byte_2;
-		uint8_t byte_3;
-		uint8_t byte_4;
-		uint8_t byte_5;
-		uint8_t byte_6;
-		uint8_t byte_7;
+		struct
+		{
+			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
+			byteUnion byte_0;
+			byteUnion byte_1;
+			byteUnion byte_2;
+			byteUnion byte_3;
+			byteUnion byte_4;
+			byteUnion byte_5;
+			byteUnion byte_6;
+			byteUnion byte_7;
+		}ID400;
+
+		struct
+		{
+			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
+			byteUnion byte_0;
+			byteUnion byte_1;
+			byteUnion byte_2;
+			byteUnion byte_3;
+			byteUnion byte_4;
+			byteUnion byte_5;
+			byteUnion byte_6;
+			byteUnion byte_7;
+		}ID401;
+
+		struct
+		{
+			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
+			byteUnion byte_0;
+			byteUnion byte_1;
+			byteUnion byte_2;
+			byteUnion byte_3;
+			byteUnion byte_4;
+			byteUnion byte_5;
+			byteUnion byte_6;
+			byteUnion byte_7;
+		}ID404;
+
 	}sendPackage;
+
+
 }canMessages;
+
+typedef struct
+{
+	bool solenoidCurrentLow;
+	bool solenoidCurrentHigh;
+	bool cockingHandleCurrentLow;
+	bool cockingHandleCurrentHigh;
+	bool herculeCurrentLow;
+	bool herculeCurrentHigh;
+	bool akbCurrentLow;
+	bool akbCurrentHigh;
+	bool kkuCurrentLow;
+	bool kkuCurrentHigh;
+	bool eosCurrentLow;
+	bool eosCurrentHigh;
+	bool gdbCurrentLow;
+	bool gdbCurrentHigh;
+	bool gdbVoltageLow;
+	bool gdbVoltageHigh;
+}error;
+
+typedef struct
+{
+	uint8_t fastRpm;
+	uint8_t slowRpm;
+	uint8_t solenoidTime;
+	uint8_t solenoidActiveTime;
+	uint8_t solenoidPassiveTime;
+	uint8_t fireMode;
+}eeprom;
 
 typedef struct
 {
 	bool fireBlockedArea;
 	uint8_t gunID;
 	uint8_t gunType;
+	uint8_t fireMode;
 
 //	struct {
 //	    uint16_t rpm;               // 600 RPM = 100ms
@@ -177,9 +260,11 @@ typedef struct
 {
 	bool solenoidActive;
 	bool triggerHeld;
+	bool shuttingDown;
 	uint32_t changeTime;
 	uint16_t burstCounter;
 	uint32_t ammoCounter;
+	uint8_t systemMode;
 }states;
 
 typedef struct
@@ -202,14 +287,13 @@ typedef struct
 	uint32_t EOSCurrent;
 	uint32_t batteryVoltage;
 
-	bool errorSolenoidCurrent;
-	bool errorCockingHandleCurrent;
-	bool errorHerculeCurrent;
-	bool errorKKUCurrent;
-	bool errorAKBCurrent;
-	bool errorGDBCurrent;
-	bool errorEOSCurrent;
-	bool errorBatteryVoltage;
+	bool herculeOK;
+	bool kkuOK;
+	bool akbOK;
+	bool eosOK;
+	bool gdbOK;
+	bool solenoidOK;
+	bool cockingHandleOK;
 }powerManagement;
 
 typedef struct {
@@ -227,23 +311,30 @@ typedef struct {
 
 typedef struct
 {
+	bool switches_safety;
+	bool switches_cocking_handle_order;
+	bool switches_movement_allowed;
+	bool switches_fire_order;
+	bool switches_system_on_off;
 	bool switches_smga;
-	bool switches_fire_feedback;
-	bool switches_safety_feedback;
 	bool switches_cocking_handle_home;
+	bool switches_crew_1;
+	bool switches_crew_2;
+
 }switches;
 
 typedef struct
 {
 	gun	gun;
+	error error;
+	eeprom eeprom;
 	states states;
 	switches switches;
 	canMessages canMessages;
 	powerManagement powerManagement;
 	analogDigitalConverter analogDigitalConverter;
-
-
 	PIO PIO;
 }pandoraStructer;
 
+extern pandoraStructer pandora;
 #endif /* DEFINITIONS_H_ */

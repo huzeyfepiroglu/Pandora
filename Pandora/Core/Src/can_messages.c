@@ -48,82 +48,132 @@ void prepareSendPackages (void)
 
 void sendCanMessages (void)
 {
-	SEND_CAN_MESSAGE(0x400,0x55,5);
+	pandora.canMessages.sendPackage.ID400.byte_0.byte = (uint8_t)(pandora.powerManagement.batteryVoltage >> 8); 		// HIGH byte
+	pandora.canMessages.sendPackage.ID400.byte_1.byte = (uint8_t)(pandora.powerManagement.batteryVoltage & 0xFF); 	// LOW byte
 
-	pandora.canMessages.sendPackage.byte_0 = 0x00;
-	pandora.canMessages.sendPackage.byte_1 = 0x00;
-	pandora.canMessages.sendPackage.byte_2 = 0x00;
-	pandora.canMessages.sendPackage.byte_3 = 0x00;
-	pandora.canMessages.sendPackage.byte_4 = 0x00;
-	pandora.canMessages.sendPackage.byte_5 = 0x00;
-	pandora.canMessages.sendPackage.byte_6 = 0x00;
-	pandora.canMessages.sendPackage.byte_7 = 0x00;
+	pandora.canMessages.sendPackage.ID400.byte_2.bit5 = pandora.gun.cockingHandle.home;
+	pandora.canMessages.sendPackage.ID400.byte_2.bit6 = pandora.gun.cockingHandle.safe;
+	pandora.canMessages.sendPackage.ID400.byte_2.bit7 = pandora.gun.cockingHandle.armed;
 
-	/*SWITCHES STATE BEGIN*/
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_0,pandora.switches.switches_smga);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_1,pandora.switches.switches_2);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_2,pandora.switches.switches_4);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_3,pandora.switches.switches_5);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_4,pandora.switches.switches_6);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_5,pandora.switches.switches_7);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_6,pandora.switches.switches_fire_feedback );
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_7,pandora.switches.switches_safety_feedback);
+	pandora.canMessages.sendPackage.ID400.byte_3.bit7 = pandora.states.shuttingDown;
 
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_0,pandora.switches.switches_cocking_handle_home);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_1,pandora.switches.reserved_1);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_2,pandora.switches.reserved_2);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_3,pandora.switches.reserved_3);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_4,pandora.switches.reserved_4);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_5,pandora.switches.reserved_5);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_6,pandora.switches.reserved_6);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_7,pandora.switches.reserved_7);
-	/*SWITCHES STATE END*/
+	pandora.canMessages.sendPackage.ID400.byte_4.bit0 = pandora.powerManagement.herculeOK;
+	pandora.canMessages.sendPackage.ID400.byte_4.bit1 = pandora.powerManagement.kkuOK;
+	pandora.canMessages.sendPackage.ID400.byte_4.bit2 = pandora.powerManagement.akbOK;
+	pandora.canMessages.sendPackage.ID400.byte_4.bit3 = pandora.powerManagement.eosOK;
+	pandora.canMessages.sendPackage.ID400.byte_4.bit4 = pandora.powerManagement.gdbOK;
+	pandora.canMessages.sendPackage.ID400.byte_4.bit5 = pandora.powerManagement.solenoidOK;
+	pandora.canMessages.sendPackage.ID400.byte_4.bit6 = pandora.powerManagement.cockingHandleOK;
 
-	/*ERRORS STATE BEGIN*/
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_0,pandora.CIT.errorAKBCurrent);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_1,pandora.CIT.errorBatteryVoltage);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_2,pandora.CIT.errorCockingHandleCurrent);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_3,pandora.CIT.errorEOSCurrent);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_4,pandora.CIT.errorGDBCurrent);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_5,pandora.CIT.errorHerculeCurrent);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_6,pandora.CIT.errorKKUCurrent);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_7,pandora.CIT.errorSolenoidCurrent);
+	pandora.canMessages.sendPackage.ID400.byte_5.byte = ((pandora.gun.gunID & 0x0F) << 4) | (pandora.gun.gunType & 0x0F);
 
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_0,pandora.CIT.reserved_1);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_1,pandora.CIT.reserved_2);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_2,pandora.CIT.reserved_3);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_3,pandora.CIT.reserved_4);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_4,pandora.CIT.reserved_5);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_5,pandora.CIT.reserved_6);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_6,pandora.CIT.reserved_7);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_7,pandora.CIT.reserved_8);
-	/*ERRORS STATE END*/
-
-	/*ID400 BEGIN*/
-	pandora.canMessages.sendPackage.byte_4 = (uint8_t)(pandora.powerManagement.batteryVoltage >> 8); // HIGH byte
-	pandora.canMessages.sendPackage.byte_5 = (uint8_t)(pandora.powerManagement.batteryVoltage & 0xFF); // LOW byte
-
-	pandora.canMessages.sendPackage.byte_6 = ((pandora.canMessages.AKB.gunID & 0x0F) << 4) | (pandora.canMessages.AKB.gunType & 0x0F);
-
-	pandora.canMessages.sendPackage.byte_7 = (uint8_t)(pandora.gun.fireSolenoid.ammoCounter >> 8); // HIGH byte
-	pandora.canMessages.sendPackage.byte_8 = (uint8_t)(pandora.gun.fireSolenoid.ammoCounter & 0xFF); // LOW byte
-
-	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_0,pandora. );
-	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_1,pandora. );
-	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_2,pandora. );
-	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_3,pandora. );
-	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_4,pandora. );
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_5,pandora.gun.cockingHandle.home);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_6,pandora.gun.cockingHandle.safe);
-	WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_7,pandora.gun.cockingHandle.armed);
-
-	//pandora.canMessages.sendPackage.byte_7 = ;
-
-	//pandora.canMessages.sendPackage.byte_8 = ;
+	pandora.canMessages.sendPackage.ID400.byte_6.byte = ((pandora.states.systemMode & 0x0F) << 4) | (0x00);
 
 
 
-	/*ID400 END*/
+
+/////////////////////////
+
+	pandora.canMessages.sendPackage.ID401.byte_0.byte |= pandora.gun.fireMode & 0x07;
+
+	pandora.canMessages.sendPackage.ID401.byte_0.byte |= (pandora.gun.cockingHandle.motorState & 0x03) << 3;
+
+
+//////////////////////////
+
+	pandora.canMessages.sendPackage.ID404.byte_0.bit0 = pandora.error.solenoidCurrentLow;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit1 = pandora.error.solenoidCurrentHigh;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit2 = pandora.error.cockingHandleCurrentLow;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit3 = pandora.error.cockingHandleCurrentHigh;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit4 = pandora.error.akbCurrentLow;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit5 = pandora.error.akbCurrentHigh;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit6 = pandora.error.kkuCurrentLow;
+	pandora.canMessages.sendPackage.ID404.byte_0.bit7 = pandora.error.kkuCurrentHigh;
+
+	pandora.canMessages.sendPackage.ID404.byte_1.bit0 = pandora.error.eosCurrentLow;
+	pandora.canMessages.sendPackage.ID404.byte_1.bit1 = pandora.error.eosCurrentHigh;
+	pandora.canMessages.sendPackage.ID404.byte_1.bit2 = pandora.error.gdbCurrentLow;
+	pandora.canMessages.sendPackage.ID404.byte_1.bit3 = pandora.error.gdbCurrentHigh;
+	pandora.canMessages.sendPackage.ID404.byte_1.bit4 = pandora.error.gdbVoltageLow;
+	pandora.canMessages.sendPackage.ID404.byte_1.bit5 = pandora.error.gdbVoltageHigh;
+
+
+//	SEND_CAN_MESSAGE(0x400,0x55,5);
+//
+//	pandora.canMessages.sendPackage.byte_0 = 0x00;
+//	pandora.canMessages.sendPackage.byte_1 = 0x00;
+//	pandora.canMessages.sendPackage.byte_2 = 0x00;
+//	pandora.canMessages.sendPackage.byte_3 = 0x00;
+//	pandora.canMessages.sendPackage.byte_4 = 0x00;
+//	pandora.canMessages.sendPackage.byte_5 = 0x00;
+//	pandora.canMessages.sendPackage.byte_6 = 0x00;
+//	pandora.canMessages.sendPackage.byte_7 = 0x00;
+//
+//	/*SWITCHES STATE BEGIN*/
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_0,pandora.switches.switches_smga);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_1,pandora.switches.switches_2);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_2,pandora.switches.switches_4);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_3,pandora.switches.switches_5);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_4,pandora.switches.switches_6);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_5,pandora.switches.switches_7);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_6,pandora.switches.switches_fire_feedback );
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_0,BIT_7,pandora.switches.switches_safety_feedback);
+//
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_0,pandora.switches.switches_cocking_handle_home);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_1,pandora.switches.reserved_1);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_2,pandora.switches.reserved_2);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_3,pandora.switches.reserved_3);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_4,pandora.switches.reserved_4);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_5,pandora.switches.reserved_5);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_6,pandora.switches.reserved_6);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_1,BIT_7,pandora.switches.reserved_7);
+//	/*SWITCHES STATE END*/
+//
+//	/*ERRORS STATE BEGIN*/
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_0,pandora.CIT.errorAKBCurrent);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_1,pandora.CIT.errorBatteryVoltage);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_2,pandora.CIT.errorCockingHandleCurrent);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_3,pandora.CIT.errorEOSCurrent);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_4,pandora.CIT.errorGDBCurrent);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_5,pandora.CIT.errorHerculeCurrent);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_6,pandora.CIT.errorKKUCurrent);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_2,BIT_7,pandora.CIT.errorSolenoidCurrent);
+//
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_0,pandora.CIT.reserved_1);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_1,pandora.CIT.reserved_2);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_2,pandora.CIT.reserved_3);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_3,pandora.CIT.reserved_4);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_4,pandora.CIT.reserved_5);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_5,pandora.CIT.reserved_6);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_6,pandora.CIT.reserved_7);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_3,BIT_7,pandora.CIT.reserved_8);
+//	/*ERRORS STATE END*/
+//
+//	/*ID400 BEGIN*/
+//	pandora.canMessages.sendPackage.byte_4 = (uint8_t)(pandora.powerManagement.batteryVoltage >> 8); // HIGH byte
+//	pandora.canMessages.sendPackage.byte_5 = (uint8_t)(pandora.powerManagement.batteryVoltage & 0xFF); // LOW byte
+//
+//	pandora.canMessages.sendPackage.byte_6 = ((pandora.canMessages.AKB.gunID & 0x0F) << 4) | (pandora.canMessages.AKB.gunType & 0x0F);
+//
+//	pandora.canMessages.sendPackage.byte_7 = (uint8_t)(pandora.gun.fireSolenoid.ammoCounter >> 8); // HIGH byte
+//	pandora.canMessages.sendPackage.byte_8 = (uint8_t)(pandora.gun.fireSolenoid.ammoCounter & 0xFF); // LOW byte
+//
+//	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_0,pandora. );
+//	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_1,pandora. );
+//	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_2,pandora. );
+//	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_3,pandora. );
+//	//WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_4,pandora. );
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_5,pandora.gun.cockingHandle.home);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_6,pandora.gun.cockingHandle.safe);
+//	WRITE_BIT(pandora.canMessages.sendPackage.byte_6,BIT_7,pandora.gun.cockingHandle.armed);
+//
+//	//pandora.canMessages.sendPackage.byte_7 = ;
+//
+//	//pandora.canMessages.sendPackage.byte_8 = ;
+//
+//
+//
+//	/*ID400 END*/
 
 }
 
@@ -151,25 +201,7 @@ HAL_StatusTypeDef FDCAN_ReceiveMessage(FDCAN_HandleTypeDef *hfdcan)
 
     if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
     {
-        switch (RxHeader.Identifier)
-        {
-        case ID_KKU:           // 0x101 #define olarak fonksiyon numaralarıyla tanımla
-        	eventKKU(RxData, RxHeader.DataLength);
-            break;
-
-        case AKB_199:
-        	eventAKB(RxHeader.Identifier, RxData, RxHeader.DataLength);
-            break;
-
-        case AKB_200:
-        	eventAKB(RxHeader.Identifier, RxData, RxHeader.DataLength);
-            break;
-
-
-        default:
-            // none
-            break;
-        }
+        eventAKB(RxHeader.Identifier, RxData, RxHeader.DataLength);
     }
 
     return HAL_ERROR; // Mesaj alımı başarısız
@@ -177,11 +209,11 @@ HAL_StatusTypeDef FDCAN_ReceiveMessage(FDCAN_HandleTypeDef *hfdcan)
 
 void eventKKU(uint8_t *data, uint8_t dataLenght)  /*örnektir. ICD oluşturulacak*/
 {
-	pandora.canMessages.KKU.hareketAnahtari 	= GET_BIT(data[2],3); // Kontrol için kullanılabilir Normalde PIO
-	pandora.canMessages.KKU.atisEmniyetAnahtari = GET_BIT(data[1],0); // Kontrol için kullanılabilir Normalde PIO
-	pandora.canMessages.KKU.kurmaAnahtari 		= GET_BIT(data[2],7); // Kontrol için kullanılabilir Normalde PIO
-	pandora.canMessages.KKU.savasModuAnahtari	= GET_BIT(data[4],5); // Kontrol için kullanılabilir Normalde PIO
-	pandora.canMessages.KKU.SMGAYoksay			= GET_BIT(data[3],5); // Kontrol için kullanılabilir Normalde PIO
+//	pandora.canMessages.KKU.hareketAnahtari 	= GET_BIT(data[2],3); // Kontrol için kullanılabilir Normalde PIO
+//	pandora.canMessages.KKU.atisEmniyetAnahtari = GET_BIT(data[1],0); // Kontrol için kullanılabilir Normalde PIO
+//	pandora.canMessages.KKU.kurmaAnahtari 		= GET_BIT(data[2],7); // Kontrol için kullanılabilir Normalde PIO
+//	pandora.canMessages.KKU.savasModuAnahtari	= GET_BIT(data[4],5); // Kontrol için kullanılabilir Normalde PIO
+//	pandora.canMessages.KKU.SMGAYoksay			= GET_BIT(data[3],5); // Kontrol için kullanılabilir Normalde PIO
 }
 
 void eventAKB(uint32_t id, uint8_t *data, uint8_t dataLenght)
@@ -230,7 +262,7 @@ void eventAKB(uint32_t id, uint8_t *data, uint8_t dataLenght)
 		pandora.canMessages.AKB.solenoidPassiveTime			= data[7];
 
 		pandora.gun.gunType = pandora.canMessages.AKB.gunType;
-		pandora.gun.configurations.solenoid
+
 	}
 
 }

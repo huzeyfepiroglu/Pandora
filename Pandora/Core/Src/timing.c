@@ -10,9 +10,6 @@
 
 #include "timing.h"
 
-uint8_t errorTime;
-bool displayOK;
-
 uint8_t configurableTime = 1;
 
 uint8_t  _configurableCounter 	= 0;
@@ -101,7 +98,6 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     	{
     		_250msFlagScanStart = true;
     		_250msCounter = 0;
-    		voltmeter.blinkFlag = !voltmeter.blinkFlag;
     	}
 
     	_500msCounter++;
