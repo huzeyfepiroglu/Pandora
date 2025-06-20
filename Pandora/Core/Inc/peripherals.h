@@ -146,7 +146,7 @@
 #define RS485_TX
 ///////
 
-
+void functionMeasure(void);
 
 
 #endif /* PERIPHERALS_H_ */

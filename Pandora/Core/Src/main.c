@@ -35,6 +35,7 @@
 #include "peripherals.h"
 #include "can_messages.h"
 #include "cocking_handle_maingun.h"
+#include "gun_control.h"
 #include "error.h"
 /* USER CODE END Includes */
 
@@ -143,14 +144,16 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  startTimeScanFlags();
 
-	  maingunEncoderRead(&htim3);
-	  functionMeasure();
-	  function_errorCheck();
+	  if(pandora.gun.cockingHandle.motorState != IDLE)
+	  {
+		  maingunEncoderRead(&htim3);
+	  }
 
-
-
-
-
+	  if(_100msFlag)
+	  {
+		  functionMeasure();
+		  function_errorCheck();
+	  }
 
 
 	  gunControl_Process(HAL_GetTick());
