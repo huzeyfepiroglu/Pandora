@@ -39,10 +39,12 @@ void maingunCockingMotorBrake (bool state)
 	if(state == ON)
 	{
 		MOTOR_CONTROL(BRAKE_DRV_28V,ON);
+		pandora.gun.cockingHandle.brakeState = ON;
 	}
 	else if (state == OFF)
 	{
 		MOTOR_CONTROL(BRAKE_DRV_28V,OFF);
+		pandora.gun.cockingHandle.brakeState = OFF;
 	}
 
 }
@@ -165,6 +167,9 @@ void maingunEncoderRead(TIM_HandleTypeDef *htim)
 	if(pandora.switches.switches_cocking_handle_home)
 	{
 		currentCount = 0;
+		lastCount = 0;
+
+		return;
 	}
 
 	if(difference > 0)

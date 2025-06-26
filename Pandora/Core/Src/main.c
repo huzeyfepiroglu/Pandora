@@ -144,10 +144,7 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  startTimeScanFlags();
 
-	  if(pandora.gun.cockingHandle.motorState != IDLE)
-	  {
-		  maingunEncoderRead(&htim3);
-	  }
+
 
 	  if(_100msFlag)
 	  {
@@ -155,10 +152,27 @@ int main(void)
 		  function_errorCheck();
 	  }
 
+	  /* COCKING HANDLE LOOP BEGIN */
+	  if(pandora.gun.cockingHandle.motorState != IDLE)
+	  {
+		  maingunEncoderRead(&htim3);
+	  }
 
+	  if(pandora.switches.switches_cocking_handle_order && pandora.switches.switches_safety && !pandora.gun.cockingHandle.armed)
+	  {
+		  maingunCockingHandleGoArm();
+	  }
+
+	  else if (!pandora.switches.switches_safety && !pandora.gun.cockingHandle.safe)
+	  {
+		  maingunCockingHandleGoSafe();
+	  }
+	  /* COCKING HANDLE LOOP END */
+
+	  /* SOLENOID LOOP BEGIN */
 	  gunControl_Process(HAL_GetTick());
 
-	  if(pandora.switches.switches_fire_order)
+	  if(pandora.switches.switches_fire_order && pandora.switches.switches_safety && pandora.switches.switches_movement_allowed) // atış emniyet anahtarı ve hareket anahtarı
 	  {
 		  gunControl_TriggerPressed();
 	  }
@@ -166,6 +180,7 @@ int main(void)
 	  {
 		  gunControl_TriggerReleased();
 	  }
+	  /* SOLENOID LOOP END */
 	  //maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
 	  //pandora.maingunEncoder.maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
 	  //pandora.maingun.encoderCounter = __HAL_TIM_GET_COUNTER(&htim3);

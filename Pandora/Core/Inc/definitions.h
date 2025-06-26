@@ -209,18 +209,6 @@ typedef struct
 	uint8_t gunType;
 	uint8_t fireMode;
 
-//	struct {
-//	    uint16_t rpm;               // 600 RPM = 100ms
-//	    uint16_t pulseTime_ms;      // Solenoid açık süresi
-//	    FireMode mode;
-//	    uint8_t remainingShots;
-//	    uint8_t firing;
-//	    GPIO_TypeDef *port;
-//	    uint16_t pin;
-//	    GunState state;
-//	    uint32_t stateStartTime;    // Zaman takip
-//	} GunControl;
-
 	struct
 	{
 		uint8_t armedDistance;
@@ -228,6 +216,7 @@ typedef struct
 		int32_t encoderCounter;
 		bool encoderRotation;								// 1: FORWARD 0:BACKWARD
 		uint8_t motorState;									// OKEY
+		bool brakeState;
 		bool armed;											// OKEY
 		bool safe;											// OKEY
 		bool home;											// OKEY
