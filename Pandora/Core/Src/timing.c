@@ -9,6 +9,8 @@
 
 
 #include "timing.h"
+#include "tim.h"
+#include "cocking_handle_maingun.h"
 
 uint8_t configurableTime = 1;
 
@@ -49,7 +51,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
     if (htim->Instance == TIM3)   // şuan 50ms 1msye  ayarla
     {
-    	maingunEncoderRead(&htim3);		// her ms değerinde çağrılır. IDLE durumunda çağrılmayabilir #huzeyfe
+    	functionEncoderRead(&htim3);		// her ms değerinde çağrılır. IDLE durumunda çağrılmayabilir #huzeyfe
 
     	_configurableCounter++;
     	if(_configurableCounter>configurableTime)

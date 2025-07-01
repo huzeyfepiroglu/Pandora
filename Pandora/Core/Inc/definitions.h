@@ -29,8 +29,45 @@
 #define AMPER_15	15
 #define AMPER_20	20
 #define AMPER_25	25
-
 #define VOLTAGE_22	22
+
+
+#define COMMAND_ID 				0xAA
+#define COMMAND_HEADER 			0xA1
+#define REQUEST_ID 				0xBB
+#define REQUEST_HEADER			0xB1
+#define ACK_ID					0xCC
+#define ACK_HEADER				0xC1
+#define COMMAND_COCKING_HANDLE_ARMED_DISTANCE  0x01
+#define COMMAND_COCKING_HANDLE_SAFE_DISTANCE   0x02
+#define COMMAND_COCKING_HANDLE_SAFE            0x03
+#define COMMAND_COCKING_HANDLE_ARM             0x04
+#define COMMAND_COCKING_HANDLE_HOME            0x05
+#define COMMAND_SOLENOID_FAST_RPM              0x06
+#define COMMAND_SOLENOID_SLOW_RPM              0x07
+#define COMMAND_SOLENOID_TIME                  0x08
+#define COMMAND_SOLENOID_ACTIVE_TIME           0x09
+#define COMMAND_SOLENOID_PASSIVE_TIME          0x10
+#define COMMAND_SOLENOID_FIRE_MODE             0x11
+#define COMMAND_FIRE                           0x12
+#define COMMAND_OVERRIDE_SMGA                  0x13
+#define COMMAND_OVERRIDE_FIRE_BLOCKED          0x14
+#define COMMAND_OVERRIDE_WAR_MODE              0x15
+#define COMMAND_OVERRIDE_EMERGENCY_STOP        0x16
+#define COMMAND_ON_OFF_SERVO                   0x17
+#define COMMAND_ON_OFF_KKU                     0x18
+#define COMMAND_ON_OFF_EOS                     0x19
+#define COMMAND_SET_SYSTEM_DEFAULT_DATA        0x20
+#define COMMAND_SYSTEM_RESET                   0x21
+
+#define REQUEST_FUNC_1					       0x22
+#define REQUEST_FUNC_2					       0x23
+#define REQUEST_FUNC_3					       0x24
+
+
+
+
+
 
 //	FOR DEBOUNCE BEGIN
 #define DEBOUNCE_DELAY_MS 1
@@ -51,6 +88,19 @@ typedef enum {
     FIRE_MODE_SLOW_BURST_3,
     FIRE_MODE_SLOW_BURST_5
 } FireMode_t;
+
+typedef struct {
+	uint32_t hadc1Buffer[2]; // 1: EOS CURRENT
+    						 // 2: KKU CURRENT
+
+	uint32_t hadc2Buffer[2]; // 1: AKB CURRENT
+    						 // 2: SERVO CURRENT
+
+	uint32_t hadc3Buffer[4]; // 1: COCKING HANDLE CURRENT
+    						 // 2: MAIN POWER CURRENT
+    						 // 3: SOLENOID CURRENT
+    						 // 4: MAIN POWER VOLTAGE
+} analogDigitalConverter;
 
 typedef union {
     struct {
@@ -85,12 +135,12 @@ typedef struct
 	struct
 	{
 		/* ID300 BEGIN	COCKING HANDLE*/
-		uint8_t cockingHandleArmedDistance;
-		uint8_t cockingHandleSafeDistance;
+		uint16_t cockingHandleArmedDistance;
+		uint16_t cockingHandleSafeDistance;
 		bool commandCockingHandleSafe;
 		bool commandCockingHandleArm;
 		bool commandCockingHandleHome;
-		bool commandCockingHandleCancel;
+		bool commandCockingHandleCancel;   //???????
 		/* ID300 END COCKING HANDLE*/
 
 		/* ID301 BEGIN	SOLENOID*/
@@ -165,12 +215,54 @@ typedef struct
 			byteUnion byte_5;
 			byteUnion byte_6;
 			byteUnion byte_7;
+		}ID402;
+
+		struct
+		{
+			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
+			byteUnion byte_0;
+			byteUnion byte_1;
+			byteUnion byte_2;
+			byteUnion byte_3;
+			byteUnion byte_4;
+			byteUnion byte_5;
+			byteUnion byte_6;
+			byteUnion byte_7;
 		}ID404;
-
 	}sendPackage;
-
-
 }canMessages;
+
+typedef struct
+{
+	uint8_t gunID;
+	uint8_t gunType;
+
+
+
+
+
+
+
+	bool overrideFireBlocked;
+	bool overrideSmga;
+	bool overrideWarMode;
+	bool overrideEmergencyStop;
+
+	uint8_t cockingHandleArmedDistance;
+	uint8_t cockingHandleSafeDistance;
+
+	uint16_t solenoidFastRpm;
+	uint16_t solenoidSlowRpm;
+	uint8_t  solenoidFireMode;
+	uint8_t  solenoidTime;
+	uint8_t  solenoidActiveTime;						//OKEY 8 BIT
+	uint8_t  solenoidPassiveTime;
+
+	bool onOffServo;
+	bool onOffKKU;
+	bool onOffEOS;
+
+}configurations;
 
 typedef struct
 {
@@ -204,66 +296,34 @@ typedef struct
 
 typedef struct
 {
-	bool fireBlockedArea;
-	uint8_t gunID;
-	uint8_t gunType;
-	uint8_t fireMode;
-
 	struct
 	{
-		uint8_t armedDistance;
-		uint8_t safeDistance;
-		int32_t encoderCounter;
-		bool encoderRotation;								// 1: FORWARD 0:BACKWARD
-		uint8_t motorState;									// OKEY
-		bool brakeState;
-		bool armed;											// OKEY
-		bool safe;											// OKEY
-		bool home;											// OKEY
-		registers registers;
+		int32_t 	encoderCounter;
+		bool 		encoderRotation;								// 1: FORWARD 0:BACKWARD
+		uint8_t 	motorState;										// OKEY
+		bool 		brakeState;
+		bool 		armed;											// OKEY
+		bool 		safe;											// OKEY
+		bool 		home;											// OKEY
 	}cockingHandle;
 
 	struct
 	{
 		uint8_t ammoCounter;
 		bool tetikBilgisi;
-
-		registers registers;
-	}fireSolenoid;
-
-	struct
-	{
-		uint8_t fastRpm;								//OKEY
-		uint8_t slowRpm;								//OKEY
-		uint8_t solenoidTime;							//OKEY
-		uint8_t solenoidActiveTime;						//OKEY
-		uint8_t solenoidPassiveTime;					//OKEY
-		uint8_t fireMode;								//OKEY
-
-
-	}configurations;
-
+	}solenoid;
 }gun;
 
 typedef struct
 {
-	bool solenoidActive;
-	bool triggerHeld;
-	bool shuttingDown;
-	uint32_t changeTime;
-	uint16_t burstCounter;
-	uint32_t ammoCounter;
-	uint8_t systemMode;
+	bool 		solenoidActive;
+	bool 		triggerHeld;
+	bool 		shuttingDown;
+	uint32_t 	changeTime;
+	uint16_t 	burstCounter;
+	uint32_t 	ammoCounter;
+	uint8_t 	systemMode;
 }states;
-
-typedef struct
-{
-	bool fireSafetySwitch;
-	bool cockingHandleSwitch;
-	bool movementSwitch;
-	bool fireOrderSwitch;
-	bool systemOnOffSwitch;				// AÇILIRKEN DONANIMSAL KAPANIRKEN MÜHÜRLEME KAPATILACAK
-}PIO;
 
 typedef struct
 {
@@ -284,19 +344,6 @@ typedef struct
 	bool solenoidOK;
 	bool cockingHandleOK;
 }powerManagement;
-
-typedef struct {
-	uint32_t hadc1Buffer[2]; // 1: EOS CURRENT
-    						 // 2: KKU CURRENT
-
-	uint32_t hadc2Buffer[2]; // 1: AKB CURRENT
-    						 // 2: SERVO CURRENT
-
-	uint32_t hadc3Buffer[4]; // 1: COCKING HANDLE CURRENT
-    						 // 2: MAIN POWER CURRENT
-    						 // 3: SOLENOID CURRENT
-    						 // 4: MAIN POWER VOLTAGE
-} analogDigitalConverter;
 
 typedef struct
 {
@@ -320,9 +367,9 @@ typedef struct
 	states states;
 	switches switches;
 	canMessages canMessages;
+	configurations configurations;
 	powerManagement powerManagement;
 	analogDigitalConverter analogDigitalConverter;
-	PIO PIO;
 }pandoraStructer;
 
 extern pandoraStructer pandora;

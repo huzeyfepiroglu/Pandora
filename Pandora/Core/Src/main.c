@@ -131,8 +131,8 @@ int main(void)
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   __HAL_TIM_SET_COUNTER(&htim3,0);
 
-  gunControl_Init();
-  gunControl_SetMode(FIRE_MODE_SINGLE);
+  functionGunControlInit();
+  functionGunControlSetMode(FIRE_MODE_SINGLE);
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -155,30 +155,30 @@ int main(void)
 	  /* COCKING HANDLE LOOP BEGIN */
 	  if(pandora.gun.cockingHandle.motorState != IDLE)
 	  {
-		  maingunEncoderRead(&htim3);
+		  functionEncoderRead(&htim3);
 	  }
 
 	  if(pandora.switches.switches_cocking_handle_order && pandora.switches.switches_safety && !pandora.gun.cockingHandle.armed)
 	  {
-		  maingunCockingHandleGoArm();
+		  functionCockingHandleGoArm();
 	  }
 
 	  else if (!pandora.switches.switches_safety && !pandora.gun.cockingHandle.safe)
 	  {
-		  maingunCockingHandleGoSafe();
+		  functionCockingHandleGoSafe();
 	  }
 	  /* COCKING HANDLE LOOP END */
 
 	  /* SOLENOID LOOP BEGIN */
-	  gunControl_Process(HAL_GetTick());
+	  functionGunControlProcess(HAL_GetTick());
 
 	  if(pandora.switches.switches_fire_order && pandora.switches.switches_safety && pandora.switches.switches_movement_allowed) // atış emniyet anahtarı ve hareket anahtarı
 	  {
-		  gunControl_TriggerPressed();
+		  functionGunControlTriggerPressed();
 	  }
 	  else
 	  {
-		  gunControl_TriggerReleased();
+		  functionGunControlTriggerReleased();
 	  }
 	  /* SOLENOID LOOP END */
 	  //maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);

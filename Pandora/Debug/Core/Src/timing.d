@@ -37,7 +37,8 @@ Core/Src/timing.o: ../Core/Src/timing.c ../Core/Inc/timing.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
- ../Core/Inc/definitions.h
+ ../Core/Inc/definitions.h ../Core/Inc/tim.h \
+ ../Core/Inc/cocking_handle_maingun.h
 ../Core/Inc/timing.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -79,3 +80,5 @@ Core/Src/timing.o: ../Core/Src/timing.c ../Core/Inc/timing.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
 ../Core/Inc/definitions.h:
+../Core/Inc/tim.h:
+../Core/Inc/cocking_handle_maingun.h:

@@ -10,6 +10,20 @@
 
 extern pandoraStructer pandora;
 
+#define COUNT_BUTTON	9
+
+typedef struct digitalInput_Struct
+{
+	GPIO_PinState 	inputVal;					//INIT - GPIO_PIN_RESET 	check if error is occured, change variable type to bit
+	bool 			readFlag;					//INIT -> false
+	uint16_t 		inputPin;					//CUSTOM
+	GPIO_TypeDef 	*inputPort;					//CUSTOM
+	GPIO_PinState 	readState;
+	uint32_t 		debounceTimer;				//INIT -> 0
+	uint32_t 		debounceFactor;				//CUSTOM-INIT
+
+} digitalInput;
+
 typedef struct {
     GPIO_TypeDef* port;         // Butonun bağlı olduğu GPIO portu (örneğin GPIOA)
     uint16_t pin;               // Butonun bağlı olduğu pin (örneğin GPIO_PIN_0)
@@ -42,27 +56,6 @@ Switches_t switchesArray[SWITCHES_COUNT] =
 	[CREW_1_SWITCH] 			= {SWITCHES_CREW_1_GPIO_Port				, SWITCHES_CREW_1_Pin	 			, false , 0},
 	[CREW_2_SWITCH]				= {SWITCHES_CREW_2_GPIO_Port				, SWITCHES_CREW_2_Pin	 			, false , 0},
 };
-
-//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
-//{
-//    uint32_t now = HAL_GetTick();
-//
-//    for (int i = 0; i < SWITCHES_COUNT; i++)
-//    {
-//        if (switchesArray[i].pin == GPIO_Pin)	// Bu pin başka portta olabilir. Okuyarak karşılaştır.
-//        {
-//            if ((now - switchesArray[i].lastChangeTime) >= DEBOUNCE_DELAY_MS)
-//            {
-//                if (HAL_GPIO_ReadPin(switchesArray[i].port, switchesArray[i].pin) == GPIO_PIN_SET)
-//                	switchesArray[i].state = HIGH;
-//                else
-//                	switchesArray[i].state = LOW;
-//
-//                switchesArray[i].lastChangeTime = now;
-//            }
-//        }
-//    }
-//}
 
 void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
 {
@@ -178,3 +171,158 @@ void functionMeasure(void)
 	pandora.powerManagement.GDBCurrent 				= pandora.analogDigitalConverter.hadc3Buffer[0];
 	pandora.powerManagement.KKUCurrent 				= pandora.analogDigitalConverter.hadc1Buffer[1];
 }
+
+
+
+
+
+
+
+
+//
+//digitalInput boardDigitalInputs[BUTTON_COUNT];			//OK
+//
+//void initDigitalInputs(digitalInput *digitalInputPtr)
+//{
+//	/****************************************************
+//	***	CUSTOM VALUES SHOULD BE INITIALIZED MANUALLY	***
+//	****************************************************/
+//	boardDigitalInputs[0].inputPin 		= SWITCHES_SAFETY_Pin;
+//	boardDigitalInputs[0].inputPort		= SWITCHES_SAFETY_GPIO_Port;
+//	boardDigitalInputs[1].inputPin 		= SWITCHES_COCKING_HANDLE_ORDER_Pin;
+//	boardDigitalInputs[1].inputPort		= SWITCHES_COCKING_HANDLE_ORDER_GPIO_Port;
+//	boardDigitalInputs[2].inputPin 		= SWITCHES_MOVEMENT_ALLOWED_Pin;
+//	boardDigitalInputs[2].inputPort		= SWITCHES_MOVEMENT_ALLOWED_GPIO_Port;
+//	boardDigitalInputs[3].inputPin 		= SWITCHES_FIRE_ORDER_Pin;
+//	boardDigitalInputs[3].inputPort		= SWITCHES_FIRE_ORDER_GPIO_Port;
+//	boardDigitalInputs[4].inputPin 		= SWITCHES_SYSTEM_ON_OFF_Pin;
+//	boardDigitalInputs[4].inputPort		= SWITCHES_SYSTEM_ON_OFF_GPIO_Port;
+//	boardDigitalInputs[5].inputPin 		= SWITCHES_SMGA_Pin;
+//	boardDigitalInputs[5].inputPort		= SWITCHES_SMGA_GPIO_Port;
+//	boardDigitalInputs[6].inputPin 		= SWITCHES_COCKING_HANDLE_HOME_Pin;
+//	boardDigitalInputs[6].inputPort		= SWITCHES_COCKING_HANDLE_HOME_GPIO_Port;
+//	boardDigitalInputs[7].inputPin 		= SWITCHES_CREW_1_Pin;
+//	boardDigitalInputs[7].inputPort		= SWITCHES_CREW_1_GPIO_Port;
+//	boardDigitalInputs[8].inputPin 		= SWITCHES_CREW_2_Pin;
+//	boardDigitalInputs[8].inputPort		= SWITCHES_CREW_2_GPIO_Port;
+//
+//
+//	/***************************************************/
+//		uint32_t i;
+//		digitalInput* tempDigitalInputPtr = digitalInputPtr;
+//
+//		for(i = 0; i < COUNT_BUTTON; i++)
+//		{
+//			tempDigitalInputPtr	-> inputVal = GPIO_PIN_RESET;
+//			tempDigitalInputPtr	-> readFlag = false;
+//			tempDigitalInputPtr -> readState= GPIO_PIN_RESET;
+//			tempDigitalInputPtr -> debounceTimer = 0;
+//			//for prototype debounce factor
+//			tempDigitalInputPtr	-> debounceFactor = 20; /*!!!!!!!!!!!!! config structtan cekilecek !!!!!!!!!!!!!!!!!*/
+//			tempDigitalInputPtr++;
+//		}
+//
+//}
+//
+//digitalInput* getDigitalInputs(void)
+//{
+//		return &boardDigitalInputs[0];
+//}
+//
+//void readDigitalInputs(digitalInput *digitalInputPtr)
+//{
+//	uint32_t i;
+//	digitalInput* tempDigitalInputPtr = digitalInputPtr;
+//
+//	for(i=0;i<COUNT_BUTTON;i++)
+//	{
+//		tempDigitalInputPtr -> inputVal = HAL_GPIO_ReadPin(tempDigitalInputPtr->inputPort, tempDigitalInputPtr->inputPin);
+//		tempDigitalInputPtr	-> readFlag = true;
+//		tempDigitalInputPtr++;
+//	}
+//}
+//
+//void sampleDigitalInputs(digitalInput *digitalInputPtr)
+//{
+//	uint32_t i;
+//	digitalInput* tempDigitalInputPtr = digitalInputPtr;
+//
+//	for(i = 0; i < COUNT_BUTTON; i++)
+//	{
+//		if(tempDigitalInputPtr -> readFlag == true)
+//		{
+//			if(tempDigitalInputPtr -> readState == GPIO_PIN_RESET)
+//			{
+//				if(tempDigitalInputPtr -> inputVal == GPIO_PIN_RESET)
+//				{
+//					if(tempDigitalInputPtr -> debounceTimer < tempDigitalInputPtr -> debounceFactor)
+//					{
+//						tempDigitalInputPtr -> debounceTimer++;
+//					}
+//					if(tempDigitalInputPtr ->debounceTimer >= tempDigitalInputPtr ->debounceFactor)
+//					{
+//						tempDigitalInputPtr -> debounceTimer = 0;
+//						tempDigitalInputPtr -> readState = GPIO_PIN_SET;
+//					}
+//				}
+//				else
+//				{
+//					tempDigitalInputPtr -> debounceTimer = 0;
+//				}
+//			}
+//
+//			else if(tempDigitalInputPtr -> readState == GPIO_PIN_SET)
+//			{
+//				if(tempDigitalInputPtr -> inputVal == GPIO_PIN_SET)
+//				{
+//					if(tempDigitalInputPtr -> debounceTimer < tempDigitalInputPtr -> debounceFactor)
+//					{
+//						tempDigitalInputPtr -> debounceTimer++;
+//					}
+//					if(tempDigitalInputPtr ->debounceTimer >= tempDigitalInputPtr ->debounceFactor)
+//					{
+//						tempDigitalInputPtr -> debounceTimer = 0;
+//						tempDigitalInputPtr -> readState = GPIO_PIN_RESET;
+//					}
+//				}
+//				else
+//				{
+//					tempDigitalInputPtr -> debounceTimer = 0;
+//				}
+//			}
+//
+//			tempDigitalInputPtr   ->  readFlag = false;
+//
+//			tempDigitalInputPtr++;
+//		}
+//	}
+//}
+
+
+
+
+
+
+
+
+
+//void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
+//{
+//    uint32_t now = HAL_GetTick();
+//
+//    for (int i = 0; i < SWITCHES_COUNT; i++)
+//    {
+//        if (switchesArray[i].pin == GPIO_Pin)	// Bu pin başka portta olabilir. Okuyarak karşılaştır.
+//        {
+//            if ((now - switchesArray[i].lastChangeTime) >= DEBOUNCE_DELAY_MS)
+//            {
+//                if (HAL_GPIO_ReadPin(switchesArray[i].port, switchesArray[i].pin) == GPIO_PIN_SET)
+//                	switchesArray[i].state = HIGH;
+//                else
+//                	switchesArray[i].state = LOW;
+//
+//                switchesArray[i].lastChangeTime = now;
+//            }
+//        }
+//    }
+//}

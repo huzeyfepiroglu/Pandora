@@ -16,7 +16,7 @@ extern pandoraStructer pandora;
 // variables needed for just cocking_handle_maingun.c not global
 int32_t lastCount = 0;
 
-void maingunCockingMotorDrive(bool direction)
+void functionCockingMotorDrive(bool direction)
 {
 	if(direction == FORWARD)
 	{
@@ -34,7 +34,7 @@ void maingunCockingMotorDrive(bool direction)
 	}
 }
 
-void maingunCockingMotorBrake (bool state)
+void functionCockingMotorBrake (bool state)
 {
 	if(state == ON)
 	{
@@ -49,7 +49,7 @@ void maingunCockingMotorBrake (bool state)
 
 }
 
-void maingunCockingMotorStop(void)
+void functionCockingMotorStop(void)
 {
 	MOTOR_CONTROL(COCKING_HANDLE_DRV_H_BACKWARD,OFF);
 	MOTOR_CONTROL(COCKING_HANDLE_DRV_H_FORWARD,OFF);
@@ -57,109 +57,120 @@ void maingunCockingMotorStop(void)
 	pandora.gun.cockingHandle.motorState = IDLE;
 }
 
-void maingunCockingHandleGoHome (void)
+void functionCockingHandleGoHome (void)
 {
 	if(!pandora.switches.switches_cocking_handle_home)
 	{
-		maingunCockingMotorBrake(OFF);
+		functionCockingMotorBrake(OFF);
 
 		do
 		{
-			maingunCockingMotorDrive(BACKWARD);
+			functionCockingMotorDrive(BACKWARD);
 		}
 		while(pandora.switches.switches_cocking_handle_home);
 
-		maingunCockingMotorStop();
-		maingunCockingMotorBrake(ON);
+		functionCockingMotorStop();
+		functionCockingMotorBrake(ON);
 	}
+
+	pandora.gun.cockingHandle.safe  = false;
+	pandora.gun.cockingHandle.home  = true;
 }
 
-void maingunCockingHandleGoSafe (void)
+void functionCockingHandleGoSafe (void)
 {
 	if(!pandora.switches.switches_cocking_handle_home)
 	{
-		maingunCockingMotorBrake(OFF);
+		functionCockingMotorBrake(OFF);
 
 		do
 		{
-			maingunCockingMotorDrive(BACKWARD);
+			functionCockingMotorDrive(BACKWARD);
 		}
 		while(pandora.switches.switches_cocking_handle_home);
 
-		maingunCockingMotorStop();
-		maingunCockingMotorBrake(ON);
+		functionCockingMotorStop();
+		functionCockingMotorBrake(ON);
 	}
 
 	if(pandora.switches.switches_cocking_handle_home)
 	{
-		maingunCockingMotorBrake(OFF);
+		functionCockingMotorBrake(OFF);
 
 		do
 		{
-			maingunCockingMotorDrive(FORWARD);
+			functionCockingMotorDrive(FORWARD);
 		}
-		while(!maingunCountEncoderPulse(SAFE_POSITION));
+		while(!functionCountEncoderPulse(SAFE_POSITION));
 
-		maingunCockingMotorStop();
-		maingunCockingMotorBrake(ON);
+		functionCockingMotorStop();
+		functionCockingMotorBrake(ON);
 	}
+
+	pandora.gun.cockingHandle.armed = false;
+	pandora.gun.cockingHandle.safe  = true;
+	pandora.gun.cockingHandle.home  = true;
 }
 
-void maingunCockingHandleGoArm (void)
+void functionCockingHandleGoArm (void)
 {
 	if(!pandora.switches.switches_cocking_handle_home)
 	{
-		maingunCockingMotorBrake(OFF);
+		functionCockingMotorBrake(OFF);
 
 		do
 		{
-			maingunCockingMotorDrive(BACKWARD);
+			functionCockingMotorDrive(BACKWARD);
 		}
 		while(pandora.switches.switches_cocking_handle_home);
 
-		maingunCockingMotorStop();
-		maingunCockingMotorBrake(ON);
+		functionCockingMotorStop();
+		functionCockingMotorBrake(ON);
 	}
 
 	if(pandora.switches.switches_cocking_handle_home)
 	{
-		maingunCockingMotorBrake(OFF);
+		functionCockingMotorBrake(OFF);
 
 		do
 		{
-			maingunCockingMotorDrive(FORWARD);
+			functionCockingMotorDrive(FORWARD);
 		}
-		while(!maingunCountEncoderPulse(ARM_POSITION));
+		while(!functionCountEncoderPulse(ARM_POSITION));
 
-		maingunCockingMotorStop();
-		maingunCockingMotorBrake(ON);
+		functionCockingMotorStop();
+		functionCockingMotorBrake(ON);
 	}
 
 	if(!pandora.switches.switches_cocking_handle_home)
 	{
-		maingunCockingMotorBrake(OFF);
+		functionCockingMotorBrake(OFF);
 
 		do
 		{
-			maingunCockingMotorDrive(BACKWARD);
+			functionCockingMotorDrive(BACKWARD);
 		}
 		while(pandora.switches.switches_cocking_handle_home);
 
 
-		maingunCockingMotorStop();
-		maingunCockingMotorBrake(ON);
+		functionCockingMotorStop();
+		functionCockingMotorBrake(ON);
 	}
+
+	pandora.gun.cockingHandle.armed = true;
+	pandora.gun.cockingHandle.safe  = false;
+	pandora.gun.cockingHandle.home  = true;
 }
 
-bool maingunCountEncoderPulse(uint32_t position)
+bool functionCountEncoderPulse(uint32_t position)
 {
-	if(pandora.gun.cockingHandle.encoderCounter <= position)								// main içerisinde maingunEncoderCounter saymalı..! OK #huzeyfe
+	if(pandora.gun.cockingHandle.encoderCounter <= position)								// main içerisinde functionEncoderCounter saymalı..! OK #huzeyfe
 		return true;
 	else
 		return false;
 }
 
-void maingunEncoderRead(TIM_HandleTypeDef *htim)
+void functionEncoderRead(TIM_HandleTypeDef *htim)
 {
 	int32_t currentCount = __HAL_TIM_GET_COUNTER(htim);
 	int32_t difference = currentCount - lastCount;

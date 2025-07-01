@@ -39,7 +39,8 @@ Core/Src/can_messages.o: ../Core/Src/can_messages.c \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
  ../Core/Inc/functions.h ../Core/Inc/definitions.h \
- ../Core/Inc/peripherals.h ../Core/Inc/fdcan.h
+ ../Core/Inc/peripherals.h ../Core/Inc/fdcan.h \
+ ../Core/Inc/cocking_handle_maingun.h
 ../Core/Inc/can_messages.h:
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
@@ -84,3 +85,4 @@ Core/Src/can_messages.o: ../Core/Src/can_messages.c \
 ../Core/Inc/definitions.h:
 ../Core/Inc/peripherals.h:
 ../Core/Inc/fdcan.h:
+../Core/Inc/cocking_handle_maingun.h:
