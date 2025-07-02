@@ -133,6 +133,7 @@ int main(void)
 
   functionGunControlInit();
   functionGunControlSetMode(FIRE_MODE_SINGLE);
+  functionFlashGetVal();
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -149,7 +150,7 @@ int main(void)
 	  if(_100msFlag)
 	  {
 		  functionMeasure();
-		  function_errorCheck();
+		  functionErrorCheck();
 	  }
 
 	  /* COCKING HANDLE LOOP BEGIN */

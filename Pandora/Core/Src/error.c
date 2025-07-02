@@ -9,7 +9,7 @@
 
 extern pandoraStructer pandora;
 
-void function_errorCheck (void)
+void functionErrorCheck (void)
 {
 	/************************SOLENOID_BEGIN**************************/
 	if(pandora.powerManagement.solenoidCurrent > AMPER_5)

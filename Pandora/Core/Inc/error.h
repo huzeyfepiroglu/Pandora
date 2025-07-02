@@ -8,6 +8,6 @@
 #ifndef ERROR_H_
 #define ERROR_H_
 
-void function_errorCheck (void);
+void functionErrorCheck (void);
 
 #endif /* ERROR_H_ */
