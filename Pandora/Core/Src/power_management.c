@@ -29,29 +29,46 @@ void funcPCIUnitSupply(void)	/*Power Control Interface*/
 	UNIT_CONTROL(SERVO_POWER,ON);
 }
 
-void funcVoltageMeasure(uint8_t *data)
-{
-	pandora.powerManagement.batteryVoltage = pandora.analogDigitalConverter.hadc3Buffer[3];
-}
 /*
- * AKB (OPTIMUS):
- * Kesme Akımı 5A = 0.6V
- * 5A = 186/1024 ADC
- * 0.6V = 0.5mA*1.2k
- *
- * KKU (ETNA)
- * Kesme Akımı 8A = 0.8V
- * 8A = 248/1024 ADC
- * 0.6V = 0.5mA*1.2k
+ * GİRİŞ GERİLİMİ
+ * 16 BIT ADC												Çözünürlük
+ * 136k//4.7k												Gerilim Bölücü
+ * 28 Volt için 0.935 Volt #28/0.935#=29.94652 				Katsayı
+ * #3.3/65535# = 0.000050354 								1 Bite Gelen Volt Değeri
+ * VOLTAGE = ((ADC_VALUE * 3.3)/65535)*(28/0.935)			Formül
  */
-void funcCurrentMeasure(uint8_t *data)
+void functionVoltageMeasure(void)
 {
-	pandora.powerManagement.solenoidCurrent 		= pandora.analogDigitalConverter.hadc3Buffer[2];
-	pandora.powerManagement.cockingHandleCurrent 	= pandora.analogDigitalConverter.hadc3Buffer[0];
-	pandora.powerManagement.servoCurrent 			= pandora.analogDigitalConverter.hadc2Buffer[1];
-	pandora.powerManagement.AKBCurrent 				= pandora.analogDigitalConverter.hadc2Buffer[0];
-	pandora.powerManagement.EOSCurrent 				= pandora.analogDigitalConverter.hadc1Buffer[0];
-	pandora.powerManagement.GDBCurrent 				= pandora.analogDigitalConverter.hadc3Buffer[0];
-	pandora.powerManagement.KKUCurrent 				= pandora.analogDigitalConverter.hadc1Buffer[1];
+	pandora.powerManagement.batteryVoltage = (((pandora.analogDigitalConverter.hadc3Buffer[3])*3.3)/65535)*(28/0.935);
+}
+
+/*
+ * AKB CURRENT
+ * 16 BIT ADC												Çözünürlük
+ * Kesme Akımı 5A = 0.6V									Kesme Akımındaki Gerilim Değeri
+ * 5 AMPER için 0.6 VOLT #5/0.6#=8.33333	 				Katsayı
+ * #3.3/65535# = 0.000050354 								1 Bite Gelen Volt Değeri
+ * CURRENT = ((ADC_VALUE * 3.3)/65535)*(5/0.6)				Formül
+ */
+
+/*
+ * KKU CURRENT
+ * 16 BIT ADC												Çözünürlük
+ * Kesme Akımı 8A = 0.8V									Kesme Akımındaki Gerilim Değeri
+ * 5 AMPER için 0.8 VOLT #5/0.8#=6.25	 					Katsayı
+ * #3.3/65535# = 0.000050354 								1 Bite Gelen Volt Değeri
+ * CURRENT = ((ADC_VALUE * 3.3)/65535)*(5/0.8)				Formül
+ */
+
+
+void functionCurrentMeasure(void)
+{
+	pandora.powerManagement.solenoidCurrent 		= ((pandora.analogDigitalConverter.hadc3Buffer[2] * 3.3)/65535)*(5/0.8); // #DÜZENLE KESME DEĞERLERİNİ
+	pandora.powerManagement.cockingHandleCurrent 	= ((pandora.analogDigitalConverter.hadc3Buffer[0] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.servoCurrent 			= ((pandora.analogDigitalConverter.hadc2Buffer[1] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.AKBCurrent 				= ((pandora.analogDigitalConverter.hadc2Buffer[0] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.EOSCurrent 				= ((pandora.analogDigitalConverter.hadc1Buffer[0] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.GDBCurrent 				= ((pandora.analogDigitalConverter.hadc3Buffer[0] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.KKUCurrent 				= ((pandora.analogDigitalConverter.hadc1Buffer[1] * 3.3)/65535)*(5/0.8);
 }
 

@@ -84,7 +84,7 @@ void functionFlashDefaultValue(void)
 {
     uint32_t defaultValuePage = 127; // Bank 1 son sayfa
 
-    if (Flash_ErasePage(defaultValuePage) == HAL_OK)
+    if (Flash_EraseSector(defaultValuePage) == HAL_OK)
     {
         Flash_Write16ToPage(defaultValuePage, dataToWrite, sizeof(dataToWrite)/2);
 

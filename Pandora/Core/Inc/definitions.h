@@ -29,7 +29,8 @@
 #define AMPER_15	15
 #define AMPER_20	20
 #define AMPER_25	25
-#define VOLTAGE_22	22
+#define VOLT_22		22
+#define VOLT_28		28
 
 
 #define COMMAND_ID 				0xAA
@@ -54,7 +55,7 @@
 #define COMMAND_OVERRIDE_FIRE_BLOCKED          0x14
 #define COMMAND_OVERRIDE_WAR_MODE              0x15
 #define COMMAND_OVERRIDE_EMERGENCY_STOP        0x16
-#define COMMAND_ON_OFF_SERVO                   0x17
+#define COMMAND_ON_OFF_HERCULE                 0x17
 #define COMMAND_ON_OFF_KKU                     0x18
 #define COMMAND_ON_OFF_EOS                     0x19
 #define COMMAND_SET_SYSTEM_DEFAULT_DATA        0x20
@@ -237,12 +238,6 @@ typedef struct
 	uint8_t gunID;
 	uint8_t gunType;
 
-
-
-
-
-
-
 	bool overrideFireBlocked;
 	bool overrideSmga;
 	bool overrideWarMode;
@@ -258,7 +253,8 @@ typedef struct
 	uint8_t  solenoidActiveTime;						//OKEY 8 BIT
 	uint8_t  solenoidPassiveTime;
 
-	bool onOffServo;
+	bool onOffAKB;
+	bool onOffHERCULE;
 	bool onOffKKU;
 	bool onOffEOS;
 
@@ -282,16 +278,21 @@ typedef struct
 	bool gdbCurrentHigh;
 	bool gdbVoltageLow;
 	bool gdbVoltageHigh;
+
+	bool system;
 }error;
 
 typedef struct
 {
-	uint8_t fastRpm;
-	uint8_t slowRpm;
-	uint8_t solenoidTime;
-	uint8_t solenoidActiveTime;
-	uint8_t solenoidPassiveTime;
-	uint8_t fireMode;
+	uint8_t cockingHandleArmedDistance;
+	uint8_t cockingHandleSafeDistance;
+
+	uint16_t solenoidFastRpm;
+	uint16_t solenoidSlowRpm;
+	uint8_t  solenoidFireMode;
+	uint8_t  solenoidTime;
+	uint8_t  solenoidActiveTime;						//OKEY 8 BIT
+	uint8_t  solenoidPassiveTime;
 }eeprom;
 
 typedef struct
@@ -323,18 +324,19 @@ typedef struct
 	uint16_t 	burstCounter;
 	uint32_t 	ammoCounter;
 	uint8_t 	systemMode;
+	registers abc;
 }states;
 
 typedef struct
 {
-	uint32_t solenoidCurrent;
-	uint32_t cockingHandleCurrent;
-	uint32_t servoCurrent;
+	uint32_t SCurrent;
+	uint32_t CHCurrent;
+	uint32_t HERCULECurrent;
 	uint32_t KKUCurrent;
 	uint32_t AKBCurrent;
 	uint32_t GDBCurrent;
 	uint32_t EOSCurrent;
-	uint32_t batteryVoltage;
+	uint32_t BATVoltage;
 
 	bool herculeOK;
 	bool kkuOK;
@@ -373,4 +375,6 @@ typedef struct
 }pandoraStructer;
 
 extern pandoraStructer pandora;
+
+extern eeprom eeprom_ram;
 #endif /* DEFINITIONS_H_ */

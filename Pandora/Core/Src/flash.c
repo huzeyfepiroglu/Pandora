@@ -1,91 +1,48 @@
 #include "flash.h"
-#include <string.h>
+#include "definitions.h"
 
-static uint32_t GetPageAddress(uint32_t pageNumber)
+#define FLASH_SECTOR     7
+#define FLASH_ADDR       (FLASH_BASE_BANK1 + (FLASH_SECTOR * FLASH_SECTOR_SIZE))
+
+static const eeprom defaultValues = {
+	.cockingHandleArmedDistance = 10,
+	.cockingHandleSafeDistance  = 5,
+	.solenoidFastRpm            = 3000,
+	.solenoidSlowRpm            = 1500,
+	.solenoidFireMode           = 1,
+	.solenoidTime               = 50,
+	.solenoidActiveTime         = 20,
+	.solenoidPassiveTime        = 30
+};
+
+void functionLoadFromFlash(void)
 {
-    if (pageNumber < 128)
-        return FLASH_BASE_BANK1 + (pageNumber * FLASH_PAGE_SIZE);
-    else
-        return FLASH_BASE_BANK2 + ((pageNumber - 128) * FLASH_PAGE_SIZE);
+	const eeprom* flash_ptr = (const eeprom*)FLASH_ADDR;
+
+	if (*(const uint32_t*)flash_ptr != 0xFFFFFFFF) {
+		memcpy(&pandora.eeprom, flash_ptr, sizeof(eeprom));
+	} else {
+		memcpy(&pandora.eeprom, &defaultValues, sizeof(eeprom));
+	}
 }
 
-static uint32_t GetPageBank(uint32_t pageNumber)
+void functionSaveToFlash(void)
 {
-    return (pageNumber < 128) ? FLASH_BANK_1 : FLASH_BANK_2;
-}
+	uint8_t buffer[FLASH_WORD_SIZE];
+	memset(buffer, 0xFF, sizeof(buffer));
+	memcpy(buffer, &pandora.eeprom, sizeof(eeprom));
 
-HAL_StatusTypeDef Flash_ErasePage(uint32_t pageNumber)
-{
-    FLASH_EraseInitTypeDef eraseInit;
-    uint32_t pageError;
+	FLASH_EraseInitTypeDef eraseInit;
+	uint32_t sectorError;
 
-    eraseInit.TypeErase = FLASH_TYPEERASE_PAGES;
-    eraseInit.Banks = GetPageBank(pageNumber);
-    eraseInit.Page = (pageNumber < 128) ? pageNumber : (pageNumber - 128);
-    eraseInit.NbPages = 1;
+	eraseInit.TypeErase    = FLASH_TYPEERASE_SECTORS;
+	eraseInit.Banks        = FLASH_BANK_1;
+	eraseInit.Sector       = FLASH_SECTOR;
+	eraseInit.NbSectors    = 1;
+	eraseInit.VoltageRange = FLASH_VOLTAGE_RANGE_3;
 
-    HAL_FLASH_Unlock();
-    HAL_StatusTypeDef status = HAL_FLASHEx_Erase(&eraseInit, &pageError);
-    HAL_FLASH_Lock();
-
-    return status;
-}
-
-// 16-bit veri yazımı
-HAL_StatusTypeDef Flash_Write16AtOffset(uint32_t pageNumber, uint8_t offset, uint16_t value)
-{
-    if (offset % 2 != 0 || offset >= FLASH_WORD_SIZE) return HAL_ERROR;
-
-    uint8_t buffer[FLASH_WORD_SIZE];
-    memset(buffer, 0xFF, sizeof(buffer));
-
-    buffer[offset]     = value & 0xFF;
-    buffer[offset + 1] = (value >> 8) & 0xFF;
-
-    uint32_t address = GetPageAddress(pageNumber);
-
-    HAL_FLASH_Unlock();
-    HAL_StatusTypeDef status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, address, (uint64_t*)buffer);
-    HAL_FLASH_Lock();
-
-    return status;
-}
-
-uint16_t Flash_Read16(uint32_t address)
-{
-    return *(volatile uint16_t*)address;
-}
-
-bool Flash_IsEmpty16(uint32_t address)
-{
-    return (*(volatile uint16_t*)address == 0xFFFF);
-}
-
-// 8-bit veri yazımı
-HAL_StatusTypeDef Flash_Write8AtOffset(uint32_t pageNumber, uint8_t offset, uint8_t value)
-{
-    if (offset >= FLASH_WORD_SIZE) return HAL_ERROR;
-
-    uint8_t buffer[FLASH_WORD_SIZE];
-    memset(buffer, 0xFF, sizeof(buffer));
-
-    buffer[offset] = value;
-
-    uint32_t address = GetPageAddress(pageNumber);
-
-    HAL_FLASH_Unlock();
-    HAL_StatusTypeDef status = HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, address, (uint64_t*)buffer);
-    HAL_FLASH_Lock();
-
-    return status;
-}
-
-uint8_t Flash_Read8(uint32_t address)
-{
-    return *(volatile uint8_t*)address;
-}
-
-bool Flash_IsEmpty8(uint32_t address)
-{
-    return (*(volatile uint8_t*)address == 0xFF);
+	HAL_FLASH_Unlock();
+	HAL_FLASHEx_Erase(&eraseInit, &sectorError);
+	HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, EEPROM_FLASH_ADDR, (uint64_t*)buffer);
+	HAL_FLASH_Lock();
 }

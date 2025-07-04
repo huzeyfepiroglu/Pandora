@@ -9,93 +9,63 @@
 
 extern pandoraStructer pandora;
 
-void functionErrorCheck (void)
+void functionHighCurrentErrorCheck (void)
 {
-	/************************SOLENOID_BEGIN**************************/
-	if(pandora.powerManagement.solenoidCurrent > AMPER_5)
-	{
-		pandora.error.solenoidCurrentHigh = true;
-	}
-	else
-	{
-		pandora.error.solenoidCurrentHigh = false;
-	}
-	/************************SOLENOID_END****************************/
+	pandora.error.solenoidCurrentHigh		= (pandora.powerManagement.SCurrent		 	> AMPER_5) 	? true : false;
+	pandora.error.cockingHandleCurrentHigh	= (pandora.powerManagement.CHCurrent		> AMPER_5) 	? true : false;
+	pandora.error.herculeCurrentHigh 		= (pandora.powerManagement.HERCULECurrent 	> AMPER_5) 	? true : false;
+	pandora.error.kkuCurrentHigh 			= (pandora.powerManagement.KKUCurrent 		> AMPER_5) 	? true : false;
+	pandora.error.akbCurrentHigh 			= (pandora.powerManagement.AKBCurrent 		> AMPER_5) 	? true : false;
+	pandora.error.gdbCurrentHigh 			= (pandora.powerManagement.GDBCurrent 		> AMPER_5) 	? true : false;
+	pandora.error.eosCurrentHigh 			= (pandora.powerManagement.EOSCurrent 		> AMPER_5) 	? true : false;
+	pandora.error.gdbVoltageHigh 			= (pandora.powerManagement.BATVoltage 		> VOLT_28) 	? true : false;
+	pandora.error.gdbVoltageLow	 			= (pandora.powerManagement.BATVoltage 		< VOLT_22) 	? true : false;
+}
 
-	/*********************COCKING_HANDLE_BEGIN***********************/
-	if(pandora.powerManagement.cockingHandleCurrent > AMPER_5)
+void functionMosfetErrorCheck (void)
+{
+	if((pandora.switches.switches_fire_order 	== true)	&&
+	   (pandora.states.firing 					== true )   &&
+	   (pandora.powerManagement.SCurrent 		< AMPER_1)  &&
+	   (pandora.error.system 					== false))
 	{
-		pandora.error.cockingHandleCurrentHigh = true;
+		pandora.error.solenoidCurrentLow = true; // mosfet hatası. LOOP kontrolü var olduğu için atış durumunda akım çekmiyorsa mosfet arızalıdır.
 	}
-	else
-	{
-		pandora.error.cockingHandleCurrentHigh = false;
-	}
-	/*********************COCKING_HANDLE_END*************************/
 
-	/************************HERCULE_BEGIN***************************/
-	if(pandora.powerManagement.servoCurrent > AMPER_5)
+	if((pandora.switches.switches_cocking_handle_order 	== true    )	&&
+	   (pandora.gun.cockingHandle.brakeState 			== OFF     )	&&
+	   (pandora.gun.cockingHandle.motorState 			!= IDLE    )	&&
+	   (pandora.powerManagement.CHCurrent				<  AMPER_1 ) 	&&
+	   (pandora.error.system 							== false   ))
 	{
-		pandora.error.herculeCurrentHigh = true;
+		pandora.error.cockingHandleCurrentLow = true; // mosfet hatası. LOOP kontrolü var olduğu için atış durumunda akım çekmiyorsa mosfet arızalıdır.
 	}
-	else
-	{
-		pandora.error.herculeCurrentHigh = false;
-	}
-	/************************HERCULE_END*****************************/
 
-	/**************************KKU_BEGIN*****************************/
-	if(pandora.powerManagement.KKUCurrent > AMPER_5)
+	if((pandora.configurations.onOffAKB				 	== true    )	&&
+	   (pandora.powerManagement.AKBCurrent				<  AMPER_1 ) 	&&
+	   (pandora.error.system 							== false   ))
 	{
-		pandora.error.kkuCurrentHigh = true;
+		pandora.error.akbCurrentLow = true;
 	}
-	else
-	{
-		pandora.error.kkuCurrentHigh = false;
-	}
-	/**************************KKU_END*******************************/
 
-	/**************************AKB_BEGIN*****************************/
-	if(pandora.powerManagement.AKBCurrent > AMPER_5)
+	if((pandora.configurations.onOffKKU				 	== true    )	&&
+	   (pandora.powerManagement.KKUCurrent				<  AMPER_1 ) 	&&
+	   (pandora.error.system 							== false   ))
 	{
-		pandora.error.akbCurrentHigh = true;
+		pandora.error.kkuCurrentLow = true;
 	}
-	else
-	{
-		pandora.error.akbCurrentHigh = false;
-	}
-	/**************************AKB_END*******************************/
 
-	/**************************GDB_BEGIN*****************************/
-	if(pandora.powerManagement.GDBCurrent > AMPER_5)
+	if((pandora.configurations.onOffEOS				 	== true    )	&&
+	   (pandora.powerManagement.EOSCurrent				<  AMPER_1 ) 	&&
+	   (pandora.error.system 							== false   ))
 	{
-		pandora.error.gdbCurrentHigh = true;
+		pandora.error.eosCurrentLow = true;
 	}
-	else
-	{
-		pandora.error.gdbCurrentHigh = false;
-	}
-	/**************************GDB_END*******************************/
 
-	/**************************EOS_BEGIN*****************************/
-	if(pandora.powerManagement.EOSCurrent > AMPER_5)
+	if((pandora.configurations.onOffHERCULE				== true    )	&&
+	   (pandora.powerManagement.HERCULECurrent			<  AMPER_1 ) 	&&
+	   (pandora.error.system 							== false   ))
 	{
-		pandora.error.eosCurrentHigh = true;
+		pandora.error.herculeCurrentLow = true;
 	}
-	else
-	{
-		pandora.error.eosCurrentHigh = false;
-	}
-	/**************************EOS_END*******************************/
-
-	/************************BATTERY_BEGIN***************************/
-	if(pandora.powerManagement.batteryVoltage < VOLTAGE_22)
-	{
-		pandora.error.gdbVoltageLow = true;
-	}
-	else
-	{
-		pandora.error.gdbVoltageLow = false;
-	}
-	/************************BATTERY_END***************************/
 }

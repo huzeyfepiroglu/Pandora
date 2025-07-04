@@ -37,6 +37,7 @@
 #include "cocking_handle_maingun.h"
 #include "gun_control.h"
 #include "error.h"
+#include "flash.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -130,10 +131,72 @@ int main(void)
 
   HAL_TIM_Encoder_Start(&htim3, TIM_CHANNEL_ALL);
   __HAL_TIM_SET_COUNTER(&htim3,0);
+  /*
+   * 	BEGIN
+   */
+  functionLoadFromFlash();														//kayıtlı verileri flashtan al
 
+  /*
+   * 	SYSTEM CHECK
+   */
+  pandora.powerManagement.akbOK 	= FEEDBACK_READ(AKB_LOOP);
+  pandora.powerManagement.eosOK 	= FEEDBACK_READ(EOS_LOOP);
+  pandora.powerManagement.gdbOK 	= FEEDBACK_READ(GDB_LOOP);
+  pandora.powerManagement.herculeOK = FEEDBACK_READ(HERCULE_LOOP);
+  pandora.powerManagement.kkuOK		= FEEDBACK_READ(KKU_LOOP);
+
+
+
+  pandora.error.isPluggedAKB 	 = (pandora.powerManagement.actualAKBOK 	|| pandora.configurations.overrideAKBOK); // takılı olmadan da çalışabilmesi için override'a bak
+  pandora.error.isPluggedEOS	 = (pandora.powerManagement.actualEOSOK 	|| pandora.configurations.overrideEOSOK);
+  pandora.error.isPluggedHERCULE = (pandora.powerManagement.actualHERCULEOK || pandora.configurations.overrideHERCULEOK);
+  pandora.error.isPluggedKKU	 = (pandora.powerManagement.actualKKUOK	    || pandora.configurations.overrideKKUOK);
+
+  pandora.error.system 			 =!(pandora.powerManagement.akbOK &&
+										pandora.powerManagement.eosOK &&
+											pandora.powerManagement.gdbOK &&
+												pandora.powerManagement.herculeOK &&
+													pandora.powerManagement.kkuOK);
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * 	SWITCHES CHECK
+   */
+
+  pandora.states.firePermission = !pandora.switches.switches_smga;
+
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * 	SYSTEM CHECK
+   */
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * 	SYSTEM CHECK
+   */
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * 	SYSTEM CHECK
+   */
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * 	SYSTEM CHECK
+   */
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+  /*
+   * 	SYSTEM CHECK
+   */
+  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   functionGunControlInit();
   functionGunControlSetMode(FIRE_MODE_SINGLE);
-  functionFlashGetVal();
+  /*
+   * 	END
+   */
   /* USER CODE END 2 */
 
   /* Infinite loop */
@@ -145,12 +208,12 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  startTimeScanFlags();
 
-
-
 	  if(_100msFlag)
 	  {
-		  functionMeasure();
-		  functionErrorCheck();
+		  functionVoltageMeasure();
+		  functionCurrentMeasure();
+		  functionHighCurrentErrorCheck();
+		  functionMosfetErrorCheck();
 	  }
 
 	  /* COCKING HANDLE LOOP BEGIN */
@@ -182,15 +245,8 @@ int main(void)
 		  functionGunControlTriggerReleased();
 	  }
 	  /* SOLENOID LOOP END */
-	  //maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
-	  //pandora.maingunEncoder.maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
-	  //pandora.maingun.encoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
-	  //pandora.maingun.cockingHandle.encoderRotation = false;
 
-	  //FDCAN_SendMessage(&hfdcan1, 0x100,(uint8_t *)&(pandora.canMessages.maingunCockingHandle), 8);
-	  HAL_Delay(10);
 	  clearTimeScanFlags();
-
   }
   /* USER CODE END 3 */
 }
@@ -326,3 +382,15 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
+
+
+
+
+
+//maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
+//pandora.maingunEncoder.maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
+//pandora.maingun.encoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
+//pandora.maingun.cockingHandle.encoderRotation = false;
+
+//FDCAN_SendMessage(&hfdcan1, 0x100,(uint8_t *)&(pandora.canMessages.maingunCockingHandle), 8);
+//HAL_Delay(10);

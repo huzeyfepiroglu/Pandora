@@ -223,7 +223,7 @@ void checkCommand(uint8_t* data)
 			sendAckUart();
 		break;
 
-		case COMMAND_ON_OFF_SERVO:
+		case COMMAND_ON_OFF_HERCULE:
 			pandora.configurations.onOffServo = data[2];
 			sendAckUart();
 		break;
