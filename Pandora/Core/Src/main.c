@@ -139,24 +139,24 @@ int main(void)
   /*
    * 	SYSTEM CHECK
    */
-  pandora.powerManagement.akbOK 	= FEEDBACK_READ(AKB_LOOP);
-  pandora.powerManagement.eosOK 	= FEEDBACK_READ(EOS_LOOP);
-  pandora.powerManagement.gdbOK 	= FEEDBACK_READ(GDB_LOOP);
-  pandora.powerManagement.herculeOK = FEEDBACK_READ(HERCULE_LOOP);
-  pandora.powerManagement.kkuOK		= FEEDBACK_READ(KKU_LOOP);
+//  pandora.error.AKBOK 		= FEEDBACK_READ(AKB_LOOP);
+//  pandora.error.EOSOK 		= FEEDBACK_READ(EOS_LOOP);
+//  pandora.error.GDBOK 		= FEEDBACK_READ(GDB_LOOP);
+//  pandora.error.HERCULEOK 	= FEEDBACK_READ(HERCULE_LOOP);
+//  pandora.error.KKUOK		= FEEDBACK_READ(KKU_LOOP);
+//
+//
+//
+//  pandora.error.isPluggedAKB 	 = (pandora.powerManagement.actualAKBOK 	|| pandora.configurations.overrideAKBOK); // takılı olmadan da çalışabilmesi için override'a bak
+//  pandora.error.isPluggedEOS	 = (pandora.powerManagement.actualEOSOK 	|| pandora.configurations.overrideEOSOK);
+//  pandora.error.isPluggedHERCULE = (pandora.powerManagement.actualHERCULEOK || pandora.configurations.overrideHERCULEOK);
+//  pandora.error.isPluggedKKU	 = (pandora.powerManagement.actualKKUOK	    || pandora.configurations.overrideKKUOK);
 
-
-
-  pandora.error.isPluggedAKB 	 = (pandora.powerManagement.actualAKBOK 	|| pandora.configurations.overrideAKBOK); // takılı olmadan da çalışabilmesi için override'a bak
-  pandora.error.isPluggedEOS	 = (pandora.powerManagement.actualEOSOK 	|| pandora.configurations.overrideEOSOK);
-  pandora.error.isPluggedHERCULE = (pandora.powerManagement.actualHERCULEOK || pandora.configurations.overrideHERCULEOK);
-  pandora.error.isPluggedKKU	 = (pandora.powerManagement.actualKKUOK	    || pandora.configurations.overrideKKUOK);
-
-  pandora.error.system 			 =!(pandora.powerManagement.akbOK &&
-										pandora.powerManagement.eosOK &&
-											pandora.powerManagement.gdbOK &&
-												pandora.powerManagement.herculeOK &&
-													pandora.powerManagement.kkuOK);
+  pandora.error.system 			 =!(pandora.error.AKBOK &&
+										pandora.error.EOSOK &&
+											pandora.error.GDBOK &&
+												pandora.error.HERCULEOK &&
+													pandora.error.KKUOK);
 
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -210,10 +210,27 @@ int main(void)
 
 	  if(_100msFlag)
 	  {
-		  functionVoltageMeasure();
-		  functionCurrentMeasure();
-		  functionHighCurrentErrorCheck();
-		  functionMosfetErrorCheck();
+		  functionMeasureVoltage();
+		  functionMeasureCurrent();
+
+		  functionErrorHighCurrentCheck();
+		  functionErrorMosfetCheck();
+	  }
+
+	  if(!pandora.error.system 						&&
+		 pandora.gun.cockingHandle.armed 			&&
+	  	 pandora.switches.switches_movement_allowed &&
+		 pandora.switches.switches_safety 			&&
+		 (!pandora.switches.switches_smga || pandora.configurations.overrideSmga) &&
+		 pandora.switches.switches_fire_order 		&&
+		 !pandora.states.emergencyStop 				&&
+		 (!pandora.states.fireBlocked || pandora.configurations.overrideFireBlocked))
+	  {
+		  pandora.states.firePermission = true;
+	  }
+	  else
+	  {
+		  pandora.states.firePermission = false;
 	  }
 
 	  /* COCKING HANDLE LOOP BEGIN */
@@ -236,7 +253,10 @@ int main(void)
 	  /* SOLENOID LOOP BEGIN */
 	  functionGunControlProcess(HAL_GetTick());
 
-	  if(pandora.switches.switches_fire_order && pandora.switches.switches_safety && pandora.switches.switches_movement_allowed) // atış emniyet anahtarı ve hareket anahtarı
+	  if(pandora.switches.switches_fire_order 		&&
+		 pandora.switches.switches_safety 			&&
+		 pandora.switches.switches_movement_allowed &&
+		(!pandora.switches.switches_smga || pandora.states.overrideSmga)) // atış emniyet anahtarı ve hareket anahtarı
 	  {
 		  functionGunControlTriggerPressed();
 	  }

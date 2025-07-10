@@ -9,7 +9,7 @@
 
 extern pandoraStructer pandora;
 
-void functionHighCurrentErrorCheck (void)
+void functionErrorHighCurrentCheck (void)
 {
 	pandora.error.solenoidCurrentHigh		= (pandora.powerManagement.SCurrent		 	> AMPER_5) 	? true : false;
 	pandora.error.cockingHandleCurrentHigh	= (pandora.powerManagement.CHCurrent		> AMPER_5) 	? true : false;
@@ -22,7 +22,7 @@ void functionHighCurrentErrorCheck (void)
 	pandora.error.gdbVoltageLow	 			= (pandora.powerManagement.BATVoltage 		< VOLT_22) 	? true : false;
 }
 
-void functionMosfetErrorCheck (void)
+void functionErrorMosfetCheck (void)
 {
 	if((pandora.switches.switches_fire_order 	== true)	&&
 	   (pandora.states.firing 					== true )   &&
@@ -69,3 +69,22 @@ void functionMosfetErrorCheck (void)
 		pandora.error.herculeCurrentLow = true;
 	}
 }
+
+
+
+
+
+// SİLME
+//void functionErrorLoopCheck(void)
+//{
+//	  pandora.error.isPluggedAKB 	 = (pandora.powerManagement.actualAKBOK 	|| pandora.configurations.overrideAKBOK); // takılı olmadan da çalışabilmesi için override'a bak
+//	  pandora.error.isPluggedEOS	 = (pandora.powerManagement.actualEOSOK 	|| pandora.configurations.overrideEOSOK);
+//	  pandora.error.isPluggedHERCULE = (pandora.powerManagement.actualHERCULEOK || pandora.configurations.overrideHERCULEOK);
+//	  pandora.error.isPluggedKKU	 = (pandora.powerManagement.actualKKUOK	    || pandora.configurations.overrideKKUOK);
+//
+//	  pandora.error.system 			 =!(pandora.powerManagement.akbOK &&
+//											pandora.powerManagement.eosOK &&
+//												pandora.powerManagement.gdbOK &&
+//													pandora.powerManagement.herculeOK &&
+//														pandora.powerManagement.kkuOK);
+//}

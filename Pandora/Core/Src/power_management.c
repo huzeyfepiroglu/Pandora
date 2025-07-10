@@ -37,9 +37,9 @@ void funcPCIUnitSupply(void)	/*Power Control Interface*/
  * #3.3/65535# = 0.000050354 								1 Bite Gelen Volt Değeri
  * VOLTAGE = ((ADC_VALUE * 3.3)/65535)*(28/0.935)			Formül
  */
-void functionVoltageMeasure(void)
+void functionMeasureVoltage(void)
 {
-	pandora.powerManagement.batteryVoltage = (((pandora.analogDigitalConverter.hadc3Buffer[3])*3.3)/65535)*(28/0.935);
+	pandora.powerManagement.BATVoltage = (((pandora.analogDigitalConverter.hadc3Buffer[3])*3.3)/65535)*(28/0.935);
 }
 
 /*
@@ -61,11 +61,11 @@ void functionVoltageMeasure(void)
  */
 
 
-void functionCurrentMeasure(void)
+void functionMeasureCurrent(void)
 {
-	pandora.powerManagement.solenoidCurrent 		= ((pandora.analogDigitalConverter.hadc3Buffer[2] * 3.3)/65535)*(5/0.8); // #DÜZENLE KESME DEĞERLERİNİ
-	pandora.powerManagement.cockingHandleCurrent 	= ((pandora.analogDigitalConverter.hadc3Buffer[0] * 3.3)/65535)*(5/0.8);
-	pandora.powerManagement.servoCurrent 			= ((pandora.analogDigitalConverter.hadc2Buffer[1] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.SCurrent 				= ((pandora.analogDigitalConverter.hadc3Buffer[2] * 3.3)/65535)*(5/0.8); // #DÜZENLE KESME DEĞERLERİNİ
+	pandora.powerManagement.CHCurrent 				= ((pandora.analogDigitalConverter.hadc3Buffer[0] * 3.3)/65535)*(5/0.8);
+	pandora.powerManagement.HERCULECurrent 			= ((pandora.analogDigitalConverter.hadc2Buffer[1] * 3.3)/65535)*(5/0.8);
 	pandora.powerManagement.AKBCurrent 				= ((pandora.analogDigitalConverter.hadc2Buffer[0] * 3.3)/65535)*(5/0.8);
 	pandora.powerManagement.EOSCurrent 				= ((pandora.analogDigitalConverter.hadc1Buffer[0] * 3.3)/65535)*(5/0.8);
 	pandora.powerManagement.GDBCurrent 				= ((pandora.analogDigitalConverter.hadc3Buffer[0] * 3.3)/65535)*(5/0.8);

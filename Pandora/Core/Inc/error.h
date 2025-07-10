@@ -8,7 +8,7 @@
 #ifndef ERROR_H_
 #define ERROR_H_
 
-void functionHighCurrentErrorCheck (void);
-void functionMosfetErrorCheck (void);
+void functionErrorHighCurrentCheck (void);
+void functionErrorMosfetCheck (void);
 
 #endif /* ERROR_H_ */

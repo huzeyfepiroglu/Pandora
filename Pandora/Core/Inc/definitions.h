@@ -48,22 +48,23 @@
 #define COMMAND_SOLENOID_SLOW_RPM              0x07
 #define COMMAND_SOLENOID_TIME                  0x08
 #define COMMAND_SOLENOID_ACTIVE_TIME           0x09
-#define COMMAND_SOLENOID_PASSIVE_TIME          0x10
-#define COMMAND_SOLENOID_FIRE_MODE             0x11
-#define COMMAND_FIRE                           0x12
-#define COMMAND_OVERRIDE_SMGA                  0x13
-#define COMMAND_OVERRIDE_FIRE_BLOCKED          0x14
-#define COMMAND_OVERRIDE_WAR_MODE              0x15
-#define COMMAND_OVERRIDE_EMERGENCY_STOP        0x16
-#define COMMAND_ON_OFF_HERCULE                 0x17
-#define COMMAND_ON_OFF_KKU                     0x18
-#define COMMAND_ON_OFF_EOS                     0x19
-#define COMMAND_SET_SYSTEM_DEFAULT_DATA        0x20
-#define COMMAND_SYSTEM_RESET                   0x21
+#define COMMAND_SOLENOID_PASSIVE_TIME          0x0A
+#define COMMAND_SOLENOID_FIRE_MODE             0x0B
+#define COMMAND_FIRE                           0x0C
+#define COMMAND_OVERRIDE_SMGA                  0x0D
+#define COMMAND_OVERRIDE_FIRE_BLOCKED          0x0E
+#define COMMAND_OVERRIDE_WAR_MODE              0x0F
+#define COMMAND_OVERRIDE_EMERGENCY_STOP        0x10
+#define COMMAND_ON_OFF_HERCULE                 0x11
+#define COMMAND_ON_OFF_KKU                     0x12
+#define COMMAND_ON_OFF_EOS                     0x13
+#define COMMAND_SET_SYSTEM_DEFAULT_DATA        0x14
+#define COMMAND_SYSTEM_RESET                   0x15
+#define COMMAND_SAVE_TO_FLASH                  0x16
 
-#define REQUEST_FUNC_1					       0x22
-#define REQUEST_FUNC_2					       0x23
-#define REQUEST_FUNC_3					       0x24
+#define REQUEST_FUNC_1					       0x80
+#define REQUEST_FUNC_2					       0x81
+#define REQUEST_FUNC_3					       0x82
 
 
 
@@ -238,11 +239,6 @@ typedef struct
 	uint8_t gunID;
 	uint8_t gunType;
 
-	bool overrideFireBlocked;
-	bool overrideSmga;
-	bool overrideWarMode;
-	bool overrideEmergencyStop;
-
 	uint8_t cockingHandleArmedDistance;
 	uint8_t cockingHandleSafeDistance;
 
@@ -253,10 +249,6 @@ typedef struct
 	uint8_t  solenoidActiveTime;						//OKEY 8 BIT
 	uint8_t  solenoidPassiveTime;
 
-	bool onOffAKB;
-	bool onOffHERCULE;
-	bool onOffKKU;
-	bool onOffEOS;
 
 }configurations;
 
@@ -278,6 +270,21 @@ typedef struct
 	bool gdbCurrentHigh;
 	bool gdbVoltageLow;
 	bool gdbVoltageHigh;
+
+	bool isPluggedAKB;
+	bool isPluggedEOS;
+	bool isPluggedHERCULE;
+	bool isPluggedKKU;
+	bool isPluggedSOL;
+	bool isPluggedCH;
+
+	bool HERCULEOK;
+	bool KKUOK;
+	bool AKBOK;
+	bool EOSOK;
+	bool GDBOK;
+	bool SOLOK;
+	bool CHOK;
 
 	bool system;
 }error;
@@ -317,6 +324,20 @@ typedef struct
 
 typedef struct
 {
+	bool overrideFireBlocked;
+	bool overrideSmga;
+	//bool overrideWarMode;
+	//bool overrideEmergencyStop;
+
+	bool fireBlocked;
+	bool emergencyStop;
+	bool firePermission;
+
+	bool onOffAKB;
+	bool onOffHERCULE;
+	bool onOffKKU;
+	bool onOffEOS;
+
 	bool 		solenoidActive;
 	bool 		triggerHeld;
 	bool 		shuttingDown;
@@ -324,7 +345,6 @@ typedef struct
 	uint16_t 	burstCounter;
 	uint32_t 	ammoCounter;
 	uint8_t 	systemMode;
-	registers abc;
 }states;
 
 typedef struct
@@ -337,14 +357,6 @@ typedef struct
 	uint32_t GDBCurrent;
 	uint32_t EOSCurrent;
 	uint32_t BATVoltage;
-
-	bool herculeOK;
-	bool kkuOK;
-	bool akbOK;
-	bool eosOK;
-	bool gdbOK;
-	bool solenoidOK;
-	bool cockingHandleOK;
 }powerManagement;
 
 typedef struct
@@ -376,5 +388,4 @@ typedef struct
 
 extern pandoraStructer pandora;
 
-extern eeprom eeprom_ram;
 #endif /* DEFINITIONS_H_ */

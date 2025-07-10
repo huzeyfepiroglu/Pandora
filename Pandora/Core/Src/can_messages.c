@@ -66,7 +66,7 @@ void sendCanMessages (void)
 	pandora.canMessages.sendPackage.ID402.byte_0.bit4 =	pandora.switches.switches_safety;
 	pandora.canMessages.sendPackage.ID402.byte_0.bit5 =	pandora.switches.switches_smga;
 	pandora.canMessages.sendPackage.ID402.byte_0.bit6 =	pandora.switches.switches_system_on_off;
-	pandora.canMessages.sendPackage.ID402.byte_0.bit7 =
+	pandora.canMessages.sendPackage.ID402.byte_0.bit7 = pandora.switches.
 //////////////////////////
 
 	pandora.canMessages.sendPackage.ID404.byte_0.bit0 = pandora.error.solenoidCurrentLow;
@@ -247,6 +247,16 @@ void checkCommand(uint8_t* data)
 			sendAckUart();
 		break;
 
+		case COMMAND_SAVE_TO_FLASH:
+
+			pandora.eeprom.cockingHandleArmedDistance = pandora.canMessages.AKB.cockingHandleArmedDistance;
+			pandora.eeprom.cockingHandleSafeDistance = pandora.canMessages.AKB.cockingHandleSafeDistance;
+			pandora.eeprom.solenoidActiveTime = pandora.canMessages.AKB.solenoidActiveTime ;
+
+			functionSaveToFlash();
+			sendAckUart();
+		break;
+
 		case COMMAND_SYSTEM_RESET:
 			sendAckUart();
 			HAL_NVIC_SystemReset();
@@ -254,7 +264,6 @@ void checkCommand(uint8_t* data)
 
 	}
 }
-
 
 void checkRequest(uint8_t* data)
 {

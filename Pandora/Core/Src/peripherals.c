@@ -161,16 +161,7 @@ void HAL_GPIO_EXTI_Callback(uint16_t GPIO_Pin)
     }
 }
 
-void functionMeasure(void)
-{
-	pandora.powerManagement.solenoidCurrent 		= pandora.analogDigitalConverter.hadc3Buffer[2];
-	pandora.powerManagement.cockingHandleCurrent 	= pandora.analogDigitalConverter.hadc3Buffer[0];
-	pandora.powerManagement.servoCurrent 			= pandora.analogDigitalConverter.hadc2Buffer[1];
-	pandora.powerManagement.AKBCurrent 				= pandora.analogDigitalConverter.hadc2Buffer[0];
-	pandora.powerManagement.EOSCurrent 				= pandora.analogDigitalConverter.hadc1Buffer[0];
-	pandora.powerManagement.GDBCurrent 				= pandora.analogDigitalConverter.hadc3Buffer[0];
-	pandora.powerManagement.KKUCurrent 				= pandora.analogDigitalConverter.hadc1Buffer[1];
-}
+
 
 
 
