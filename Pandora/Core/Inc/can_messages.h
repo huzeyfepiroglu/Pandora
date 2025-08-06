@@ -43,7 +43,7 @@ HAL_StatusTypeDef FDCAN_ReceiveMessage(FDCAN_HandleTypeDef *hfdcan);
 void checkCommand(uint8_t* data);
 void checkRequest(uint8_t* data);
 
-void eventAKB(uint32_t id, uint8_t *data, uint8_t dataLenght);
+void eventAKB(uint32_t id, uint8_t *data);
 //void eventKKU(uint8_t *data, uint8_t dataLenght);
 //void eventEOS(uint8_t *data, uint8_t dataLenght);
 //void eventHERCULE(uint8_t *data, uint8_t dataLenght);

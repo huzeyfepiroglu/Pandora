@@ -110,254 +110,64 @@ HAL_StatusTypeDef FDCAN_ReceiveMessage(FDCAN_HandleTypeDef *hfdcan)
 
     if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
     {
-        if(RxHeader.Identifier == COMMAND_ID)
-        {
-        	checkCommand(RxData);
-        }
-        else if(RxHeader.Identifier == REQUEST_ID)
-        {
-        	checkRequest(RxData);
-        }
+    	eventAKB(RxHeader.Identifier, RxData);
     }
 
     return HAL_ERROR; // Mesaj alımı başarısız
 }
 
-void sendAckUart(void)
+
+void eventAKB(uint32_t id, uint8_t *data)
 {
-	uint8_t bufferACK[8];
-
-	bufferACK[0] = ACK_HEADER;
-	bufferACK[1] = 0X01;
-	bufferACK[2] = 0x00;
-	bufferACK[3] = 0x00;
-	bufferACK[4] = 0x00;
-	bufferACK[5] = 0x00;
-	bufferACK[6] = 0x00;
-	bufferACK[7] = 0x00;
-
-	FDCAN_SendMessage(&hfdcan2, ACK_ID    ,bufferACK, 8);
-}
-
-void checkCommand(uint8_t* data)
-{
-	switch (data[1])
+	if(id == 199)
 	{
-		case COMMAND_COCKING_HANDLE_ARMED_DISTANCE:
-			pandora.configurations.cockingHandleArmedDistance = (uint16_t)data[3] << 8 | data[2];
-			sendAckUart();
-		break;
+		pandora.canMessages.AKB.commandFireMode					= (uint8_t)(GET_BIT(data[0],2) << 2) | (uint8_t)(GET_BIT(data[0],1) << 1) | (GET_BIT(data[0],0));
+		pandora.canMessages.AKB.commandCockingHandleSafe		= (GET_BIT(data[0],3));
+		pandora.canMessages.AKB.commandGunFire					= (GET_BIT(data[0],4));
+		//pandora.canMessages.AKB.commandGunType					= (uint8_t)(GET_BIT(data[0],6) << 1) | (GET_BIT(data[0],5));
+		pandora.canMessages.AKB.commandCockingHandleArm			= (GET_BIT(data[0],7));
 
-		case COMMAND_COCKING_HANDLE_SAFE_DISTANCE:
-			pandora.configurations.cockingHandleSafeDistance = (uint16_t)data[3] << 8 | data[2];
-			sendAckUart();
-		break;
+		//pandora.canMessages.AKB.commandCockingHandleCancel		= (GET_BIT(data[1],0));	//SUBS
+		pandora.canMessages.AKB.commandSmgaAllowed				= (GET_BIT(data[1],1));
+		//pandora.canMessages.AKB.commandCounterSenseCancel		= (GET_BIT(data[1],2));		//SUBS
+		pandora.canMessages.AKB.commandWarMode					= (GET_BIT(data[1],3));
+		pandora.canMessages.AKB.commandEmergencyStop			= (GET_BIT(data[1],4));
+		//pandora.canMessages.AKB.eyleyiciPowerOnOff			= (GET_BIT(data[1],5));		//SUBS
+		pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[1],6));
+		pandora.canMessages.AKB.commandMode						= (GET_BIT(data[1],7));
+	}
 
-		case COMMAND_COCKING_HANDLE_SAFE:
-			functionCockingHandleGoSafe();
-			sendAckUart();
-		break;
-
-		case COMMAND_COCKING_HANDLE_ARM:
-			functionCockingHandleGoArm();
-			sendAckUart();
-		break;
-
-		case COMMAND_COCKING_HANDLE_HOME:
-			functionCockingHandleGoHome();
-			sendAckUart();
-		break;
-
-		case COMMAND_SOLENOID_FAST_RPM:
-			pandora.configurations.solenoidFastRpm = (uint16_t)data[3] << 8 | data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_SOLENOID_SLOW_RPM:
-			pandora.configurations.solenoidSlowRpm = (uint16_t)data[3] << 8 | data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_SOLENOID_TIME:
-			pandora.configurations.solenoidTime = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_SOLENOID_ACTIVE_TIME:
-			pandora.configurations.solenoidActiveTime = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_SOLENOID_PASSIVE_TIME:
-			pandora.configurations.solenoidPassiveTime = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_SOLENOID_FIRE_MODE:
-			pandora.configurations.solenoidFireMode = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_FIRE:
-			// TEHLİKELİ YAZILIMSAL OLARAK ŞUANDA YOK
-			sendAckUart();
-		break;
-
-		case COMMAND_OVERRIDE_SMGA:
-			pandora.configurations.overrideSmga = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_OVERRIDE_FIRE_BLOCKED:
-			pandora.configurations.overrideFireBlocked = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_OVERRIDE_WAR_MODE:
-			pandora.configurations.overrideWarMode = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_OVERRIDE_EMERGENCY_STOP:
-			pandora.configurations.overrideEmergencyStop = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_ON_OFF_HERCULE:
-			pandora.configurations.onOffServo = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_ON_OFF_KKU:
-			pandora.configurations.onOffServo = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_ON_OFF_EOS:
-			pandora.configurations.onOffEOS = data[2];
-			sendAckUart();
-		break;
-
-		case COMMAND_SET_SYSTEM_DEFAULT_DATA:
-			//
-			//
-			//
-			//
-			//
-			sendAckUart();
-		break;
-
-		case COMMAND_SAVE_TO_FLASH:
-
-			pandora.eeprom.cockingHandleArmedDistance = pandora.canMessages.AKB.cockingHandleArmedDistance;
-			pandora.eeprom.cockingHandleSafeDistance = pandora.canMessages.AKB.cockingHandleSafeDistance;
-			pandora.eeprom.solenoidActiveTime = pandora.canMessages.AKB.solenoidActiveTime ;
-
-			functionSaveToFlash();
-			sendAckUart();
-		break;
-
-		case COMMAND_SYSTEM_RESET:
-			sendAckUart();
-			HAL_NVIC_SystemReset();
-		break;
+	else if(id == 200)
+	{
+		pandora.canMessages.AKB.commandServoOnOff				= (GET_BIT(data[0],0));
+		pandora.canMessages.AKB.commandEOSOnOff					= (GET_BIT(data[0],1));		//SUBS
+		//pandora.canMessages.AKB.commandAKBOnOff					= (GET_BIT(data[0],2));
+		pandora.canMessages.AKB.commandKKBOnOff					= (GET_BIT(data[0],3));
+		//pandora.canMessages.AKB.commandEmergencyStop			= (GET_BIT(data[0],4));
+		//pandora.canMessages.AKB.eyleyiciPowerOnOff			= (GET_BIT(data[0],5));		//SUBS
+		//pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[0],6));
+		pandora.canMessages.AKB.canBusOk						= (GET_BIT(data[0],7));		//SUBS
 
 	}
-}
 
-void checkRequest(uint8_t* data)
-{
-	uint8_t responseSend[8];
-
-	switch (data[1])
+	else if (id == 800)
 	{
-		case REQUEST_FUNC_1:
-			responseSend[0] = REQUEST_HEADER;
-			responseSend[1] = REQUEST_FUNC_1;
-			responseSend[2] = 0X12;
-			responseSend[3] = 0x00;
-			responseSend[4] = 0x00;
-			responseSend[5] = 0x00;
-			responseSend[6] = 0x00;
-			responseSend[7] = 0x00;
+		pandora.canMessages.AKB.gunType						= (uint8_t)(GET_BIT(data[0],3) << 3) | (uint8_t)(GET_BIT(data[0],2) << 2) | (uint8_t)(GET_BIT(data[0],1) << 1) | (GET_BIT(data[0],0));
+		pandora.canMessages.AKB.gunID						= (uint8_t)(GET_BIT(data[0],7) << 7) | (uint8_t)(GET_BIT(data[0],6) << 6) | (uint8_t)(GET_BIT(data[0],5) << 5) | (GET_BIT(data[0],4));
+		pandora.canMessages.AKB.fastRpmHighByte				= data[1];
+		pandora.canMessages.AKB.fastRpmLowByte				= data[2];
+		pandora.canMessages.AKB.slowRpmHighByte				= data[3];
+		pandora.canMessages.AKB.slowRpmLowByte				= data[4];
+		pandora.canMessages.AKB.solenoidTime				= data[5];
+		pandora.canMessages.AKB.solenoidActiveTime			= data[6];
+		pandora.canMessages.AKB.solenoidPassiveTime			= data[7];
 
-			FDCAN_SendMessage(&hfdcan2,REQUEST_ID,responseSend, 8);
-			//HAL_UART_Transmit(&huart3, (uint8_t*)responseSend, 9, 5000);
-		break;
+		pandora.gunType = pandora.canMessages.AKB.gunType;
 
-		case REQUEST_FUNC_2:
-			responseSend[0] = REQUEST_HEADER;
-			responseSend[1] = REQUEST_FUNC_2;
-			responseSend[2] = 0X00;
-			responseSend[3] = 0X00;
-			responseSend[4] = 0X00;
-			responseSend[5] = 0X00;
-			responseSend[6] = 0X00;
-			responseSend[7] = 0X00;
-
-			FDCAN_SendMessage(&hfdcan2,REQUEST_ID,responseSend, 8);
-			//HAL_UART_Transmit(&huart3, (uint8_t*)responseSend, 9, 5000);
-
-		break;
 	}
+
 }
 
-
-
-
-
-
-
-//void eventAKB(uint32_t id, uint8_t *data, uint8_t dataLenght)
-//{
-//	if(id == 199)
-//	{
-//		pandora.canMessages.AKB.commandFireMode					= (uint8_t)(GET_BIT(data[0],2) << 2) | (uint8_t)(GET_BIT(data[0],1) << 1) | (GET_BIT(data[0],0));
-//		pandora.canMessages.AKB.commandCockingHandleSafe		= (GET_BIT(data[0],3));
-//		pandora.canMessages.AKB.commandGunFire					= (GET_BIT(data[0],4));
-//		//pandora.canMessages.AKB.commandGunType					= (uint8_t)(GET_BIT(data[0],6) << 1) | (GET_BIT(data[0],5));
-//		pandora.canMessages.AKB.commandCockingHandleArm			= (GET_BIT(data[0],7));
-//
-//		pandora.canMessages.AKB.commandCockingHandleCancel		= (GET_BIT(data[1],0));
-//		pandora.canMessages.AKB.commandSmgaAllowed				= (GET_BIT(data[1],1));
-//		pandora.canMessages.AKB.commandCounterSenseCancel		= (GET_BIT(data[1],2));
-//		pandora.canMessages.AKB.commandWarMode					= (GET_BIT(data[1],3));
-//		pandora.canMessages.AKB.commandEmergencyStop			= (GET_BIT(data[1],4));
-//		//pandora.canMessages.AKB.eyleyiciPowerOnOff			= (GET_BIT(data[1],5));		//SUBS
-//		pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[1],6));
-//		//pandora.canMessages.AKB.commandMode2					= (GET_BIT(data[1],7));		//SUBS
-//	}
-//
-//	else if(id == 200)
-//	{
-//		pandora.canMessages.AKB.commandServoOnOff				= (GET_BIT(data[0],0));
-//		pandora.canMessages.AKB.commandEOSOnOff					= (GET_BIT(data[0],1));	//SUBS
-//		//pandora.canMessages.AKB.commandAKBOnOff					= (GET_BIT(data[0],2));
-//		pandora.canMessages.AKB.commandKKBOnOff					= (GET_BIT(data[0],3));
-//		//pandora.canMessages.AKB.commandEmergencyStop			= (GET_BIT(data[0],4));
-//		//pandora.canMessages.AKB.eyleyiciPowerOnOff			= (GET_BIT(data[0],5));		//SUBS
-//		//pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[0],6));
-//		pandora.canMessages.AKB.canBusOk						= (GET_BIT(data[0],7));		//SUBS
-//
-//	}
-//
-//	else if (id == 800)
-//	{
-//		pandora.canMessages.AKB.gunType						= (uint8_t)(GET_BIT(data[0],3) << 3) | (uint8_t)(GET_BIT(data[0],2) << 2) | (uint8_t)(GET_BIT(data[0],1) << 1) | (GET_BIT(data[0],0));
-//		pandora.canMessages.AKB.gunID						= (uint8_t)(GET_BIT(data[0],7) << 7) | (uint8_t)(GET_BIT(data[0],6) << 6) | (uint8_t)(GET_BIT(data[0],5) << 5) | (GET_BIT(data[0],4));
-//		pandora.canMessages.AKB.fastRpmHighByte				= data[1];
-//		pandora.canMessages.AKB.fastRpmLowByte				= data[2];
-//		pandora.canMessages.AKB.slowRpmHighByte				= data[3];
-//		pandora.canMessages.AKB.slowRpmLowByte				= data[4];
-//		pandora.canMessages.AKB.solenoidTime				= data[5];
-//		pandora.canMessages.AKB.solenoidActiveTime			= data[6];
-//		pandora.canMessages.AKB.solenoidPassiveTime			= data[7];
-//
-//		pandora.gunType = pandora.canMessages.AKB.gunType;
-//
-//	}
-//
-//}
 //
 //void eventEOS(uint8_t *data, uint8_t dataLenght)
 //{
@@ -379,3 +189,213 @@ void checkRequest(uint8_t* data)
 //	 * KKU Hercule ile direkt olarak iletişim halinde değil.
 //	 */
 //}
+
+
+
+
+
+
+
+
+
+
+//HAL_StatusTypeDef FDCAN_ReceiveMessage(FDCAN_HandleTypeDef *hfdcan)
+//{
+//    FDCAN_RxHeaderTypeDef RxHeader;
+//    uint8_t RxData[8];
+//
+//    if (HAL_FDCAN_GetRxMessage(hfdcan, FDCAN_RX_FIFO0, &RxHeader, RxData) == HAL_OK)
+//    {
+//        if(RxHeader.Identifier == COMMAND_ID)
+//        {
+//        	checkCommand(RxData);
+//        }
+//        else if(RxHeader.Identifier == REQUEST_ID)
+//        {
+//        	checkRequest(RxData);
+//        }
+//    }
+//
+//    return HAL_ERROR; // Mesaj alımı başarısız
+//}
+
+//void sendAckUart(void)
+//{
+//	uint8_t bufferACK[8];
+//
+//	bufferACK[0] = ACK_HEADER;
+//	bufferACK[1] = 0X01;
+//	bufferACK[2] = 0x00;
+//	bufferACK[3] = 0x00;
+//	bufferACK[4] = 0x00;
+//	bufferACK[5] = 0x00;
+//	bufferACK[6] = 0x00;
+//	bufferACK[7] = 0x00;
+//
+//	FDCAN_SendMessage(&hfdcan2, ACK_ID    ,bufferACK, 8);
+//}
+//
+//void checkCommand(uint8_t* data)
+//{
+//	switch (data[1])
+//	{
+//		case COMMAND_COCKING_HANDLE_ARMED_DISTANCE:
+//			pandora.configurations.cockingHandleArmedDistance = (uint16_t)data[3] << 8 | data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_COCKING_HANDLE_SAFE_DISTANCE:
+//			pandora.configurations.cockingHandleSafeDistance = (uint16_t)data[3] << 8 | data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_COCKING_HANDLE_SAFE:
+//			functionCockingHandleGoSafe();
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_COCKING_HANDLE_ARM:
+//			functionCockingHandleGoArm();
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_COCKING_HANDLE_HOME:
+//			functionCockingHandleGoHome();
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SOLENOID_FAST_RPM:
+//			pandora.configurations.solenoidFastRpm = (uint16_t)data[3] << 8 | data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SOLENOID_SLOW_RPM:
+//			pandora.configurations.solenoidSlowRpm = (uint16_t)data[3] << 8 | data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SOLENOID_TIME:
+//			pandora.configurations.solenoidTime = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SOLENOID_ACTIVE_TIME:
+//			pandora.configurations.solenoidActiveTime = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SOLENOID_PASSIVE_TIME:
+//			pandora.configurations.solenoidPassiveTime = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SOLENOID_FIRE_MODE:
+//			pandora.configurations.solenoidFireMode = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_FIRE:
+//			// TEHLİKELİ YAZILIMSAL OLARAK ŞUANDA YOK
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_OVERRIDE_SMGA:
+//			pandora.configurations.overrideSmga = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_OVERRIDE_FIRE_BLOCKED:
+//			pandora.configurations.overrideFireBlocked = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_OVERRIDE_WAR_MODE:
+//			pandora.configurations.overrideWarMode = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_OVERRIDE_EMERGENCY_STOP:
+//			pandora.configurations.overrideEmergencyStop = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_ON_OFF_HERCULE:
+//			pandora.configurations.onOffServo = data[2];
+//
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_ON_OFF_KKU:
+//			pandora.configurations.onOffServo = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_ON_OFF_EOS:
+//			pandora.configurations.onOffEOS = data[2];
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SET_SYSTEM_DEFAULT_DATA:
+//			//
+//			//
+//			//
+//			//
+//			//
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SAVE_TO_FLASH:
+//
+//			pandora.eeprom.cockingHandleArmedDistance = pandora.canMessages.AKB.cockingHandleArmedDistance;
+//			pandora.eeprom.cockingHandleSafeDistance = pandora.canMessages.AKB.cockingHandleSafeDistance;
+//			pandora.eeprom.solenoidActiveTime = pandora.canMessages.AKB.solenoidActiveTime ;
+//
+//			functionSaveToFlash();
+//			sendAckUart();
+//		break;
+//
+//		case COMMAND_SYSTEM_RESET:
+//			sendAckUart();
+//			HAL_NVIC_SystemReset();
+//		break;
+//
+//	}
+//}
+//
+//void checkRequest(uint8_t* data)
+//{
+//	uint8_t responseSend[8];
+//
+//	switch (data[1])
+//	{
+//		case REQUEST_FUNC_1:
+//			responseSend[0] = REQUEST_HEADER;
+//			responseSend[1] = REQUEST_FUNC_1;
+//			responseSend[2] = 0X12;
+//			responseSend[3] = 0x00;
+//			responseSend[4] = 0x00;
+//			responseSend[5] = 0x00;
+//			responseSend[6] = 0x00;
+//			responseSend[7] = 0x00;
+//
+//			FDCAN_SendMessage(&hfdcan2,REQUEST_ID,responseSend, 8);
+//			//HAL_UART_Transmit(&huart3, (uint8_t*)responseSend, 9, 5000);
+//		break;
+//
+//		case REQUEST_FUNC_2:
+//			responseSend[0] = REQUEST_HEADER;
+//			responseSend[1] = REQUEST_FUNC_2;
+//			responseSend[2] = 0X00;
+//			responseSend[3] = 0X00;
+//			responseSend[4] = 0X00;
+//			responseSend[5] = 0X00;
+//			responseSend[6] = 0X00;
+//			responseSend[7] = 0X00;
+//
+//			FDCAN_SendMessage(&hfdcan2,REQUEST_ID,responseSend, 8);
+//			//HAL_UART_Transmit(&huart3, (uint8_t*)responseSend, 9, 5000);
+//
+//		break;
+//	}
+//}
+//
