@@ -1,7 +1,4 @@
-../Core/Src/can_messages.c:15:6:prepareSendPackages	1
-../Core/Src/can_messages.c:31:6:sendCanMessages	1
-../Core/Src/can_messages.c:90:19:FDCAN_SendMessage	1
-../Core/Src/can_messages.c:106:19:FDCAN_ReceiveMessage	4
-../Core/Src/can_messages.c:126:6:sendAckUart	1
-../Core/Src/can_messages.c:142:6:checkCommand	22
-../Core/Src/can_messages.c:259:6:checkRequest	3
+../Core/Src/can_messages.c:15:6:sendCanMessages	1
+../Core/Src/can_messages.c:78:19:FDCAN_SendMessage	1
+../Core/Src/can_messages.c:94:19:FDCAN_ReceiveMessage	2
+../Core/Src/can_messages.c:108:6:eventAKB	6

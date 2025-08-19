@@ -63,14 +63,6 @@
 #define BIT_6 6
 #define BIT_7 7
 
-#define HIGH 1
-#define LOW  0
-#define ON   1
-#define OFF  0
-
-#define IDLE	  2
-#define FORWARD   1
-#define BACKWARD  0
 
 
 ///////
@@ -147,6 +139,7 @@
 ///////
 
 void functionMeasure(void);
-
+void functionReadFilteredDigitalInputs(void);
+void functionReadDigitalInputs(void);
 
 #endif /* PERIPHERALS_H_ */

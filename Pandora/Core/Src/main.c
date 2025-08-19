@@ -38,6 +38,7 @@
 #include "gun_control.h"
 #include "error.h"
 #include "flash.h"
+#include "power_management.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -124,7 +125,12 @@ int main(void)
   MX_ADC1_Init();
   MX_UART8_Init();
   MX_TIM3_Init();
+  MX_TIM2_Init();
+  MX_TIM4_Init();
   /* USER CODE BEGIN 2 */
+  HAL_TIM_Base_Start_IT(&htim2);
+  HAL_TIM_Base_Start_IT(&htim4);
+
   HAL_ADC_Start_DMA(&hadc1, pandora.analogDigitalConverter.hadc1Buffer, 1);
   HAL_ADC_Start_DMA(&hadc2, pandora.analogDigitalConverter.hadc2Buffer, 1);
   HAL_ADC_Start_DMA(&hadc3, pandora.analogDigitalConverter.hadc3Buffer, 1);
@@ -134,7 +140,7 @@ int main(void)
   /*
    * 	BEGIN
    */
-  functionLoadFromFlash();														//kayıtlı verileri flashtan al
+  //functionLoadFromFlash();														//kayıtlı verileri flashtan al
 
   /*
    * 	SYSTEM CHECK
@@ -193,7 +199,6 @@ int main(void)
    */
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
   functionGunControlInit();
-  functionGunControlSetMode(FIRE_MODE_SINGLE);
   /*
    * 	END
    */
@@ -213,7 +218,7 @@ int main(void)
 		  functionMeasureVoltage();
 		  functionMeasureCurrent();
 
-		  functionErrorHighCurrentCheck();
+		  functionErrorCurrentVoltageCheck();
 		  functionErrorMosfetCheck();
 	  }
 
@@ -221,10 +226,10 @@ int main(void)
 		 pandora.gun.cockingHandle.armed 			&&
 	  	 pandora.switches.switches_movement_allowed &&
 		 pandora.switches.switches_safety 			&&
-		 (!pandora.switches.switches_smga || pandora.configurations.overrideSmga) &&
+		 (!pandora.switches.switches_smga || pandora.canMessages.AKB.commandSmgaOveride) &&
 		 pandora.switches.switches_fire_order 		&&
-		 !pandora.states.emergencyStop 				&&
-		 (!pandora.states.fireBlocked || pandora.configurations.overrideFireBlocked))
+		 !pandora.canMessages.AKB.commandEmergencyStop 				&&
+		 (!pandora.canMessages.AKB.commandFireBlockedArea || pandora.canMessages.AKB.commandFireBlockedAreaOveride))
 	  {
 		  pandora.states.firePermission = true;
 	  }
@@ -253,7 +258,7 @@ int main(void)
 	  /* SOLENOID LOOP BEGIN */
 	  functionGunControlProcess(HAL_GetTick());
 
-	  if(pandora.switches.switches_fire_order 		&&
+	  if((pandora.switches.switches_fire_order ||  pandora.canMessages.AKB.commandGunFireOveride)		&&   // ama bence tehlikeli
 		 pandora.switches.switches_safety 			&&
 		 pandora.switches.switches_movement_allowed &&
 		(!pandora.switches.switches_smga || pandora.states.overrideSmga)) // atış emniyet anahtarı ve hareket anahtarı
@@ -402,15 +407,3 @@ void assert_failed(uint8_t *file, uint32_t line)
   /* USER CODE END 6 */
 }
 #endif /* USE_FULL_ASSERT */
-
-
-
-
-
-//maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
-//pandora.maingunEncoder.maingunEncoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
-//pandora.maingun.encoderCounter = __HAL_TIM_GET_COUNTER(&htim3);
-//pandora.maingun.cockingHandle.encoderRotation = false;
-
-//FDCAN_SendMessage(&hfdcan1, 0x100,(uint8_t *)&(pandora.canMessages.maingunCockingHandle), 8);
-//HAL_Delay(10);

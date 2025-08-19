@@ -43,7 +43,8 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/gpio.h ../Core/Inc/definitions.h ../Core/Inc/timing.h \
  ../Core/Inc/definitions.h ../Core/Inc/peripherals.h ../Core/Inc/fdcan.h \
  ../Core/Inc/can_messages.h ../Core/Inc/cocking_handle_maingun.h \
- ../Core/Inc/gun_control.h ../Core/Inc/error.h
+ ../Core/Inc/gun_control.h ../Core/Inc/error.h ../Core/Inc/flash.h \
+ ../Core/Inc/power_management.h
 ../Core/Inc/main.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal.h:
 ../Core/Inc/stm32h7xx_hal_conf.h:
@@ -102,3 +103,5 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 ../Core/Inc/cocking_handle_maingun.h:
 ../Core/Inc/gun_control.h:
 ../Core/Inc/error.h:
+../Core/Inc/flash.h:
+../Core/Inc/power_management.h:

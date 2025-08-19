@@ -28,7 +28,8 @@ void functionLoadFromFlash(void)
 
 void functionSaveToFlash(void)
 {
-	uint8_t buffer[FLASH_WORD_SIZE];
+	//uint8_t buffer[FLASH_WORD_SIZE];
+	uint8_t buffer[200];
 	memset(buffer, 0xFF, sizeof(buffer));
 	memcpy(buffer, &pandora.eeprom, sizeof(eeprom));
 
@@ -43,6 +44,6 @@ void functionSaveToFlash(void)
 
 	HAL_FLASH_Unlock();
 	HAL_FLASHEx_Erase(&eraseInit, &sectorError);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, EEPROM_FLASH_ADDR, (uint64_t*)buffer);
+	//HAL_FLASH_Program(FLASH_TYPEPROGRAM_FLASHWORD, EEPROM_FLASH_ADDR, (uint64_t*)buffer);
 	HAL_FLASH_Lock();
 }

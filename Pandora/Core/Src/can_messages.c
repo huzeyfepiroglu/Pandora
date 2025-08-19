@@ -12,26 +12,10 @@
 
 extern pandoraStructer pandora;
 
-void prepareSendPackages (void)
-{
-
-}
-/*
- *	AKB->GDB	199		RECEIVE		OK
- *	AKB->GDB	200		RECEIVE		OK
- *
- *	GDB->AKB	400		TRANSMIT	OK
- *	GDB->AKB	401		TRANSMIT	OK
- *	GDB->AKB	501		TRANSMIT
- *	GDB->AKB	505		TRANSMIT
- *
- *	AKB->GDB	800		RECEIVE		OK
- *	GDB->AKB	800		TRANSMIT
- */
 void sendCanMessages (void)
 {
-	pandora.canMessages.sendPackage.ID400.byte_0.byte = (uint8_t)(pandora.powerManagement.batteryVoltage >> 8); 		// HIGH byte
-	pandora.canMessages.sendPackage.ID400.byte_1.byte = (uint8_t)(pandora.powerManagement.batteryVoltage & 0xFF); 	// LOW byte
+	pandora.canMessages.sendPackage.ID400.byte_0.byte = (uint8_t)(pandora.powerManagement.BATVoltage >> 8); 		// HIGH byte
+	pandora.canMessages.sendPackage.ID400.byte_1.byte = (uint8_t)(pandora.powerManagement.BATVoltage & 0xFF); 		// LOW byte
 
 	pandora.canMessages.sendPackage.ID400.byte_2.bit5 = pandora.gun.cockingHandle.home;
 	pandora.canMessages.sendPackage.ID400.byte_2.bit6 = pandora.gun.cockingHandle.safe;
@@ -47,17 +31,18 @@ void sendCanMessages (void)
 	pandora.canMessages.sendPackage.ID400.byte_4.bit5 = pandora.powerManagement.solenoidOK;
 	pandora.canMessages.sendPackage.ID400.byte_4.bit6 = pandora.powerManagement.cockingHandleOK;
 
-	pandora.canMessages.sendPackage.ID400.byte_5.byte = ((pandora.configurations.gunID & 0x0F) << 4) | (pandora.configurations.gunType & 0x0F);
+	pandora.canMessages.sendPackage.ID400.byte_5.byte = ((pandora.canMessages.AKB.gunID & 0x0F) << 4) | (pandora.canMessages.AKB.gunType & 0x0F);
 
 	pandora.canMessages.sendPackage.ID400.byte_6.byte = ((pandora.states.systemMode & 0x0F) << 4) | (0x00);
 
-
+	FDCAN_SendMessage(&hfdcan2, 0x400,(uint8_t *)&(pandora.canMessages.sendPackage.ID400), 8);
 /////////////////////////
 
-	pandora.canMessages.sendPackage.ID401.byte_0.byte |= pandora.configurations.solenoidFireMode & 0x07;
+	pandora.canMessages.sendPackage.ID401.byte_0.byte |= pandora.canMessages.AKB.commandFireMode & 0x07;
 
 	pandora.canMessages.sendPackage.ID401.byte_0.byte |= (pandora.gun.cockingHandle.motorState & 0x03) << 3;
 
+	FDCAN_SendMessage(&hfdcan2, 0x401,(uint8_t *)&(pandora.canMessages.sendPackage.ID401), 8);
 //////////////////////////
 	pandora.canMessages.sendPackage.ID402.byte_0.bit0 =	pandora.switches.switches_cocking_handle_home;
 	pandora.canMessages.sendPackage.ID402.byte_0.bit1 =	pandora.switches.switches_cocking_handle_order;
@@ -66,7 +51,9 @@ void sendCanMessages (void)
 	pandora.canMessages.sendPackage.ID402.byte_0.bit4 =	pandora.switches.switches_safety;
 	pandora.canMessages.sendPackage.ID402.byte_0.bit5 =	pandora.switches.switches_smga;
 	pandora.canMessages.sendPackage.ID402.byte_0.bit6 =	pandora.switches.switches_system_on_off;
-	pandora.canMessages.sendPackage.ID402.byte_0.bit7 = pandora.switches.
+	//pandora.canMessages.sendPackage.ID402.byte_0.bit7 = pandora.switches.
+
+	FDCAN_SendMessage(&hfdcan2, 0x402,(uint8_t *)&(pandora.canMessages.sendPackage.ID402), 8);
 //////////////////////////
 
 	pandora.canMessages.sendPackage.ID404.byte_0.bit0 = pandora.error.solenoidCurrentLow;
@@ -85,6 +72,7 @@ void sendCanMessages (void)
 	pandora.canMessages.sendPackage.ID404.byte_1.bit4 = pandora.error.gdbVoltageLow;
 	pandora.canMessages.sendPackage.ID404.byte_1.bit5 = pandora.error.gdbVoltageHigh;
 
+	FDCAN_SendMessage(&hfdcan2, 0x404,(uint8_t *)&(pandora.canMessages.sendPackage.ID404), 8);
 }
 
 HAL_StatusTypeDef FDCAN_SendMessage(FDCAN_HandleTypeDef *hfdcan, uint32_t id, uint8_t *data, uint8_t length)
@@ -128,25 +116,33 @@ void eventAKB(uint32_t id, uint8_t *data)
 		pandora.canMessages.AKB.commandCockingHandleArm			= (GET_BIT(data[0],7));
 
 		//pandora.canMessages.AKB.commandCockingHandleCancel		= (GET_BIT(data[1],0));	//SUBS
-		pandora.canMessages.AKB.commandSmgaAllowed				= (GET_BIT(data[1],1));
+		pandora.canMessages.AKB.commandSmgaOveride				= (GET_BIT(data[1],1));
 		//pandora.canMessages.AKB.commandCounterSenseCancel		= (GET_BIT(data[1],2));		//SUBS
 		pandora.canMessages.AKB.commandWarMode					= (GET_BIT(data[1],3));
 		pandora.canMessages.AKB.commandEmergencyStop			= (GET_BIT(data[1],4));
 		//pandora.canMessages.AKB.eyleyiciPowerOnOff			= (GET_BIT(data[1],5));		//SUBS
 		pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[1],6));
-		pandora.canMessages.AKB.commandMode						= (GET_BIT(data[1],7));
+		//pandora.canMessages.AKB.commandMode						= (GET_BIT(data[1],7));
 	}
 
 	else if(id == 200)
 	{
-		pandora.canMessages.AKB.commandServoOnOff				= (GET_BIT(data[0],0));
-		pandora.canMessages.AKB.commandEOSOnOff					= (GET_BIT(data[0],1));		//SUBS
-		//pandora.canMessages.AKB.commandAKBOnOff					= (GET_BIT(data[0],2));
-		pandora.canMessages.AKB.commandKKBOnOff					= (GET_BIT(data[0],3));
+		pandora.canMessages.AKB.commandHERCULEPowerOnOff			= (GET_BIT(data[0],0));
+		pandora.canMessages.AKB.commandEOSPowerOnOff				= (GET_BIT(data[0],1));		//SUBS
+		pandora.canMessages.AKB.commandAKBPowerOnOff				= (GET_BIT(data[0],2));
+		pandora.canMessages.AKB.commandKKBPowerOnOff				= (GET_BIT(data[0],3));
+		pandora.canMessages.AKB.commandSOLPowerOnOff				= (GET_BIT(data[0],4));
+		pandora.canMessages.AKB.commandCHPowerOnOff					= (GET_BIT(data[0],5));
 		//pandora.canMessages.AKB.commandEmergencyStop			= (GET_BIT(data[0],4));
 		//pandora.canMessages.AKB.eyleyiciPowerOnOff			= (GET_BIT(data[0],5));		//SUBS
-		//pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[0],6));
-		pandora.canMessages.AKB.canBusOk						= (GET_BIT(data[0],7));		//SUBS
+
+
+	}
+	else if(id == 201)
+	{
+		pandora.canMessages.AKB.commandCockingHandleHome		= (GET_BIT(data[0],0));
+
+
 
 	}
 
@@ -154,15 +150,21 @@ void eventAKB(uint32_t id, uint8_t *data)
 	{
 		pandora.canMessages.AKB.gunType						= (uint8_t)(GET_BIT(data[0],3) << 3) | (uint8_t)(GET_BIT(data[0],2) << 2) | (uint8_t)(GET_BIT(data[0],1) << 1) | (GET_BIT(data[0],0));
 		pandora.canMessages.AKB.gunID						= (uint8_t)(GET_BIT(data[0],7) << 7) | (uint8_t)(GET_BIT(data[0],6) << 6) | (uint8_t)(GET_BIT(data[0],5) << 5) | (GET_BIT(data[0],4));
-		pandora.canMessages.AKB.fastRpmHighByte				= data[1];
-		pandora.canMessages.AKB.fastRpmLowByte				= data[2];
-		pandora.canMessages.AKB.slowRpmHighByte				= data[3];
-		pandora.canMessages.AKB.slowRpmLowByte				= data[4];
+		pandora.canMessages.AKB.solenoidFastRpmHighByte				= data[1];
+		pandora.canMessages.AKB.solenoidFastRpmLowByte				= data[2];
+		pandora.canMessages.AKB.solenoidSlowRpmHighByte				= data[3];
+		pandora.canMessages.AKB.solenoidSlowRpmLowByte				= data[4];
 		pandora.canMessages.AKB.solenoidTime				= data[5];
 		pandora.canMessages.AKB.solenoidActiveTime			= data[6];
 		pandora.canMessages.AKB.solenoidPassiveTime			= data[7];
 
-		pandora.gunType = pandora.canMessages.AKB.gunType;
+		//pandora.gunType = pandora.canMessages.AKB.gunType;
+
+	}
+	else if (id == 801)
+	{
+		pandora.canMessages.AKB.cockingHandleArmedDistance	= (uint16_t)(data[1] << 1) | data[0];
+		pandora.canMessages.AKB.cockingHandleSafeDistance	= (uint16_t)(data[3] << 1) | data[2];
 
 	}
 

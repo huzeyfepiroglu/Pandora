@@ -37,7 +37,8 @@ Core/Src/error.o: ../Core/Src/error.c ../Core/Inc/error.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h \
  ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h \
- ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h
+ ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h \
+ ../Core/Inc/power_management.h
 ../Core/Inc/error.h:
 ../Core/Inc/definitions.h:
 ../Core/Inc/main.h:
@@ -79,3 +80,4 @@ Core/Src/error.o: ../Core/Src/error.c ../Core/Inc/error.h \
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_tim_ex.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart.h:
 ../Drivers/STM32H7xx_HAL_Driver/Inc/stm32h7xx_hal_uart_ex.h:
+../Core/Inc/power_management.h:

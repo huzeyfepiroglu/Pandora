@@ -1,0 +1,2 @@
+../Core/Src/flash.c:18:6:functionLoadFromFlash	24	static
+../Core/Src/flash.c:29:6:functionSaveToFlash	232	static

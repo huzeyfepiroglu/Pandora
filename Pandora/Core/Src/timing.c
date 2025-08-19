@@ -49,7 +49,13 @@ bool _10sFlag				= false;
 
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
-    if (htim->Instance == TIM3)   // şuan 50ms 1msye  ayarla
+    if (htim->Instance == TIM2)
+    {
+        // 1 ms’de bir gelecek yer
+        // örn: tick say, LED toggle, task scheduler vs.
+    }
+
+    if (htim->Instance == TIM4)   // şuan 50ms 1msye  ayarla
     {
     	functionEncoderRead(&htim3);		// her ms değerinde çağrılır. IDLE durumunda çağrılmayabilir #huzeyfe
 

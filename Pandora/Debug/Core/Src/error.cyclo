@@ -1,1 +1,2 @@
-../Core/Src/error.c:12:6:function_errorCheck	9
+../Core/Src/error.c:13:6:functionErrorCurrentVoltageCheck	1
+../Core/Src/error.c:26:6:functionErrorMosfetCheck	22

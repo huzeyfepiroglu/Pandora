@@ -6,10 +6,11 @@
  */
 #include "error.h"
 #include "definitions.h"
+#include "power_management.h"
 
 extern pandoraStructer pandora;
 
-void functionErrorHighCurrentCheck (void)
+void functionErrorCurrentVoltageCheck (void)
 {
 	pandora.error.solenoidCurrentHigh		= (pandora.powerManagement.SCurrent		 	> AMPER_5) 	? true : false;
 	pandora.error.cockingHandleCurrentHigh	= (pandora.powerManagement.CHCurrent		> AMPER_5) 	? true : false;
@@ -41,28 +42,28 @@ void functionErrorMosfetCheck (void)
 		pandora.error.cockingHandleCurrentLow = true; // mosfet hatası. LOOP kontrolü var olduğu için atış durumunda akım çekmiyorsa mosfet arızalıdır.
 	}
 
-	if((pandora.configurations.onOffAKB				 	== true    )	&&
+	if((pandora.states.AKBPowerOnOff				 	== true    )	&&
 	   (pandora.powerManagement.AKBCurrent				<  AMPER_1 ) 	&&
 	   (pandora.error.system 							== false   ))
 	{
 		pandora.error.akbCurrentLow = true;
 	}
 
-	if((pandora.configurations.onOffKKU				 	== true    )	&&
+	if((pandora.states.KKBPowerOnOff				 	== true    )	&&
 	   (pandora.powerManagement.KKUCurrent				<  AMPER_1 ) 	&&
 	   (pandora.error.system 							== false   ))
 	{
 		pandora.error.kkuCurrentLow = true;
 	}
 
-	if((pandora.configurations.onOffEOS				 	== true    )	&&
+	if((pandora.states.EOSPowerOnOff				 	== true    )	&&
 	   (pandora.powerManagement.EOSCurrent				<  AMPER_1 ) 	&&
 	   (pandora.error.system 							== false   ))
 	{
 		pandora.error.eosCurrentLow = true;
 	}
 
-	if((pandora.configurations.onOffHERCULE				== true    )	&&
+	if((pandora.states.HERCULEPowerOnOff				== true    )	&&
 	   (pandora.powerManagement.HERCULECurrent			<  AMPER_1 ) 	&&
 	   (pandora.error.system 							== false   ))
 	{

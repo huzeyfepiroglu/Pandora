@@ -6,6 +6,7 @@
 "./Core/Src/error.o"
 "./Core/Src/eth.o"
 "./Core/Src/fdcan.o"
+"./Core/Src/flash.o"
 "./Core/Src/functions.o"
 "./Core/Src/gpio.o"
 "./Core/Src/gun_control.o"

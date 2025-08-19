@@ -1,1 +1,4 @@
-../Core/Src/functions.c:13:6:function_solenoid	1
+../Core/Src/functions.c:15:6:function_solenoid	1
+../Core/Src/functions.c:26:6:functionFlashGetVal	1
+../Core/Src/functions.c:31:6:functionFlashWrite	1
+../Core/Src/functions.c:36:6:functionCommandsCheck	22

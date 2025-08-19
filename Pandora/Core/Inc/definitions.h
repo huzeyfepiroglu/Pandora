@@ -24,14 +24,16 @@
 #define SAFE_POSITION		500
 #define ARM_POSITION		1000
 
-#define AMPER_5		5
-#define AMPER_10	10
-#define AMPER_15	15
-#define AMPER_20	20
-#define AMPER_25	25
-#define VOLT_22		22
-#define VOLT_28		28
 
+
+#define IDLE	  2
+#define FORWARD   1
+#define BACKWARD  0
+
+#define HIGH 1
+#define LOW  0
+#define ON   1
+#define OFF  0
 
 #define COMMAND_ID 				0xAA
 #define COMMAND_HEADER 			0xA1
@@ -118,139 +120,150 @@ typedef union {
     uint8_t byte;
 } byteUnion;
 
-// 3 byte içeren yapı
-typedef struct
+typedef union
 {
-	byteUnion REG1;
-	byteUnion REG2;
-	byteUnion REG3;
-	byteUnion REG4;
-	byteUnion REG5;
-	byteUnion REG6;
-	byteUnion REG7;
-
-} registers;
-
+	byteUnion byte_0;
+	byteUnion byte_1;
+	byteUnion byte_2;
+	byteUnion byte_3;
+	byteUnion byte_4;
+	byteUnion byte_5;
+	byteUnion byte_6;
+	byteUnion byte_7;
+} ID;
 
 typedef struct
 {
 	struct
 	{
-		/* ID300 BEGIN	COCKING HANDLE*/
-		uint16_t cockingHandleArmedDistance;
-		uint16_t cockingHandleSafeDistance;
-		bool commandCockingHandleSafe;
-		bool commandCockingHandleArm;
-		bool commandCockingHandleHome;
-		bool commandCockingHandleCancel;   //???????
-		/* ID300 END COCKING HANDLE*/
-
-		/* ID301 BEGIN	SOLENOID*/
-		uint8_t fastRpmHighByte;						//OKEY 8 BIT
-		uint8_t fastRpmLowByte;							//OKEY 8 BIT
-		uint8_t slowRpmHighByte;						//OKEY 8 BIT
-		uint8_t slowRpmLowByte;							//OKEY 8 BIT
-		uint8_t solenoidTime;							//OKEY 8 BIT
-		uint8_t solenoidActiveTime;						//OKEY 8 BIT
-		uint8_t solenoidPassiveTime;					//OKEY 8 BIT
 		uint8_t commandFireMode;						//OKEY 3 BIT
-		bool 	commandGunFire;							//OKEY 1 BIT
-		bool 	commandSmgaAllowed;						//OKEY 1 BIT
-		bool 	commandCounterSenseCancel;				//OKEY 1 BIT
-		/* ID301 END	SOLENOID*/
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+		/***************************************************************/
+		bool commandFireBlockedAreaOveride;				//OKEY 1 BIT
+		bool commandSmgaOveride;						//OKEY 1 BIT
+		bool commandGunFireOveride;						//OKEY 1 BIT
+		bool commandWarMode;							//OKEY 1 BIT
+		bool commandEmergencyStop;						//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+		/***************************************************************/
+		bool commandHERCULEPowerOnOff;					//OKEY 1 BIT
+		bool commandEOSPowerOnOff;						//OKEY 1 BIT
+		bool commandKKBPowerOnOff;						//OKEY 1 BIT
+		bool commandAKBPowerOnOff;						//OKEY 1 BIT
+		bool commandSOLPowerOnOff;						//OKEY 1 BIT
+		bool commandCHPowerOnOff;						//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+		/***************************************************************/
+		bool commandCockingHandleHome;					//OKEY 1 BIT
+		bool commandCockingHandleSafe;					//OKEY 1 BIT
+		bool commandCockingHandleArm;					//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+		/***************************************************************/
+		bool commandFireBlockedArea;					//OKEY 1 BIT
+		bool commandGunFire;							//OKEY 1 BIT
+		//bool commandCockingHandleArm;					//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+														//OKEY 1 BIT
+		/***************************************************************/
+		uint8_t gunType;								//OKEY 4 BIT
+		uint8_t gunID;									//OKEY 4 BIT
+		/***************************************************************/
+		union
+		{
+		    struct
+			{
+				uint8_t solenoidFastRpmHighByte;						//OKEY 8 BIT
+				uint8_t solenoidFastRpmLowByte;							//OKEY 8 BIT
+		    };
+		    uint16_t solenoidFastRpm;
+		};
+		union
+		{
+		    struct
+			{
+				uint8_t solenoidSlowRpmHighByte;						//OKEY 8 BIT
+				uint8_t solenoidSlowRpmLowByte;							//OKEY 8 BIT
+		    };
+		    uint16_t solenoidSlowRpm;
+		};
 
-		/* ID302 BEGIN POWER*/
-		bool commandServoOnOff;
-		bool commandKKBOnOff;
-		bool commandEOSOnOff;
-		bool canBusOk;
-		/* ID302 END POWER*/
+		uint8_t solenoidTime;							//OKEY 8 BIT
+		/***************************************************************/
+		uint8_t solenoidActiveTime;						//OKEY 8 BIT
+		/***************************************************************/
+		uint8_t solenoidPassiveTime;					//OKEY 8 BIT
+		/***************************************************************/
+		uint16_t cockingHandleArmedDistance;			//OKEY 16 BIT
+		uint16_t cockingHandleSafeDistance;				//OKEY 16 BIT
 
-		/* ID303 BEGIN INTERRUPT*/
-		bool commandWarMode;
-		bool commandEmergencyStop;
-		bool fireBlockedArea;
-		/* ID303 END INTERRUPT*/
+		struct
+		{
+			bool commandWarMode;							//OKEY 1 BIT
+			bool commandEmergencyStop;						//OKEY 1 BIT
+			bool commandHERCULEPowerOnOff;					//OKEY 1 BIT
+			bool commandEOSPowerOnOff;						//OKEY 1 BIT
+			bool commandKKBPowerOnOff;						//OKEY 1 BIT
+			bool commandAKBPowerOnOff;						//OKEY 1 BIT
+			bool commandSOLPowerOnOff;						//OKEY 1 BIT
+			bool commandCHPowerOnOff;						//OKEY 1 BIT
+			bool commandCockingHandleHome;					//OKEY 1 BIT
+			bool commandCockingHandleSafe;					//OKEY 1 BIT
+			bool commandCockingHandleArm;					//OKEY 1 BIT
+		}previous;
 
-		/*	ID304 BEGIN	GENERAL PURPOSE*/
-		uint8_t gunType;								//OKEY
-		uint8_t gunID;									//OKEY
-		/*	ID304 END GENERAL PURPOSE*/
 	}AKB;
 
 	struct
 	{
-		struct
-		{
-			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
-			byteUnion byte_0;
-			byteUnion byte_1;
-			byteUnion byte_2;
-			byteUnion byte_3;
-			byteUnion byte_4;
-			byteUnion byte_5;
-			byteUnion byte_6;
-			byteUnion byte_7;
-		}ID400;
-
-		struct
-		{
-			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
-			byteUnion byte_0;
-			byteUnion byte_1;
-			byteUnion byte_2;
-			byteUnion byte_3;
-			byteUnion byte_4;
-			byteUnion byte_5;
-			byteUnion byte_6;
-			byteUnion byte_7;
-		}ID401;
-
-		struct
-		{
-			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
-			byteUnion byte_0;
-			byteUnion byte_1;
-			byteUnion byte_2;
-			byteUnion byte_3;
-			byteUnion byte_4;
-			byteUnion byte_5;
-			byteUnion byte_6;
-			byteUnion byte_7;
-		}ID402;
-
-		struct
-		{
-			// #DÜZENLE GÖNDERİLECEK PAKETLERİ STRUCTLA
-			byteUnion byte_0;
-			byteUnion byte_1;
-			byteUnion byte_2;
-			byteUnion byte_3;
-			byteUnion byte_4;
-			byteUnion byte_5;
-			byteUnion byte_6;
-			byteUnion byte_7;
-		}ID404;
+		ID ID400;
+		ID ID401;
+		ID ID402;
+		ID ID403;
+		ID ID404;
 	}sendPackage;
+
 }canMessages;
 
-typedef struct
-{
-	uint8_t gunID;
-	uint8_t gunType;
-
-	uint8_t cockingHandleArmedDistance;
-	uint8_t cockingHandleSafeDistance;
-
-	uint16_t solenoidFastRpm;
-	uint16_t solenoidSlowRpm;
-	uint8_t  solenoidFireMode;
-	uint8_t  solenoidTime;
-	uint8_t  solenoidActiveTime;						//OKEY 8 BIT
-	uint8_t  solenoidPassiveTime;
-
-
-}configurations;
+//typedef struct
+//{
+//	uint8_t gunID;
+//	uint8_t gunType;
+//
+//	bool onOffHERCULE;
+//	bool onOffEOS;
+//	bool onOffKKU;
+//	bool onOffAKB;
+//
+//
+//	bool overrideFireBlocked;
+//	bool overrideSmga;
+//
+//	uint8_t cockingHandleArmedDistance;
+//	uint8_t cockingHandleSafeDistance;
+//
+//	uint16_t solenoidFastRpm;
+//	uint16_t solenoidSlowRpm;
+//	uint8_t  solenoidFireMode;
+//	uint8_t  solenoidTime;
+//	uint8_t  solenoidActiveTime;						//OKEY 8 BIT
+//	uint8_t  solenoidPassiveTime;
+//
+//
+//}configurations;
 
 typedef struct
 {
@@ -294,6 +307,8 @@ typedef struct
 	uint8_t cockingHandleArmedDistance;
 	uint8_t cockingHandleSafeDistance;
 
+	uint8_t fireMode;
+
 	uint16_t solenoidFastRpm;
 	uint16_t solenoidSlowRpm;
 	uint8_t  solenoidFireMode;
@@ -324,7 +339,8 @@ typedef struct
 
 typedef struct
 {
-	bool overrideFireBlocked;
+	bool firing;
+//	bool overrideFireBlocked;
 	bool overrideSmga;
 	//bool overrideWarMode;
 	//bool overrideEmergencyStop;
@@ -333,10 +349,7 @@ typedef struct
 	bool emergencyStop;
 	bool firePermission;
 
-	bool onOffAKB;
-	bool onOffHERCULE;
-	bool onOffKKU;
-	bool onOffEOS;
+
 
 	bool 		solenoidActive;
 	bool 		triggerHeld;
@@ -345,10 +358,28 @@ typedef struct
 	uint16_t 	burstCounter;
 	uint32_t 	ammoCounter;
 	uint8_t 	systemMode;
+
+	/***************************************************************/
+	bool HERCULEPowerOnOff;
+	bool EOSPowerOnOff;
+	bool KKBPowerOnOff;
+	bool AKBPowerOnOff;
+	bool SOLPowerOnOff;
+	bool CHPowerOnOff;
+
+
 }states;
 
 typedef struct
 {
+	bool herculeOK;
+	bool kkuOK;
+	bool akbOK;
+	bool eosOK;
+	bool gdbOK;
+	bool solenoidOK;
+	bool cockingHandleOK;
+
 	uint32_t SCurrent;
 	uint32_t CHCurrent;
 	uint32_t HERCULECurrent;
@@ -381,7 +412,7 @@ typedef struct
 	states states;
 	switches switches;
 	canMessages canMessages;
-	configurations configurations;
+	//configurations configurations;
 	powerManagement powerManagement;
 	analogDigitalConverter analogDigitalConverter;
 }pandoraStructer;

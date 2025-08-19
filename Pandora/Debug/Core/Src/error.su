@@ -1,1 +1,2 @@
-../Core/Src/error.c:12:6:function_errorCheck	4	static
+../Core/Src/error.c:13:6:functionErrorCurrentVoltageCheck	4	static
+../Core/Src/error.c:26:6:functionErrorMosfetCheck	4	static

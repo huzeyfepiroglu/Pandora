@@ -21,13 +21,6 @@
 
 extern pandoraStructer pandora;
 
-void funcPCIUnitSupply(void)	/*Power Control Interface*/
-{
-	UNIT_CONTROL(EOS_POWER,ON);
-	UNIT_CONTROL(KKU_POWER,ON);
-	UNIT_CONTROL(AKB_POWER,ON);
-	UNIT_CONTROL(SERVO_POWER,ON);
-}
 
 /*
  * GİRİŞ GERİLİMİ

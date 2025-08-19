@@ -7,92 +7,188 @@
 #include "functions.h"
 #include "peripherals.h"
 #include "definitions.h"
+#include "cocking_handle_maingun.h"
 #include "flash.h"
 
 extern pandoraStructer pandora;
 
-void function_solenoid(uint8_t *data)
+void functionCommandsCheck(void)
 {
-	//UNIT_CONTROL(LED,ON);
-	uint8_t value = false;//FEEDBACK_READ(BUTTON);
-
-	if(value == HIGH)
-	{
-
-	}
-}
-
-void functionFlashGetVal(void)
-{
-
-}
-
-void functionFlashWrite(void)
-{
-
-}
-
-void functionFlashWriteDefault(void)
-{
-	uint32_t index = 0;
-	//default degerler düzenlenecek
-	defaultTkkConfig.yMin = 12000;
-	defaultTkkConfig.yMax = 15000;
-	defaultTkkConfig.yMid = 19000;
-
-	defaultTkkConfig.xMin = 12000;
-	defaultTkkConfig.xMax = 15000;
-	defaultTkkConfig.xMid = 19000;
-	for(index = 0; index < BUTTON_COUNT; index++)
-	{
-		defaultTkkConfig.debounceFactor[index] = 20;
-	}
-
-	defaultTkkConfig.tkkModSelection = TKK_MOD_RS422;
-
-	volatile uint32_t i = 0;
-	HAL_FLASH_Unlock();
-	static FLASH_EraseInitTypeDef EraseInitStructDefaultPage;
-	EraseInitStructDefaultPage.TypeErase = FLASH_TYPEERASE_PAGES;
-	EraseInitStructDefaultPage.PageAddress = DEFAULT_CONFIG_DATA_BASE_ADDR;
-	EraseInitStructDefaultPage.NbPages = 1;
-
-	if(HAL_FLASHEx_Erase(&EraseInitStructDefaultPage, &PAGEError) != HAL_OK)
-	{
-		Error_Handler();
-	}
-
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_INTERFACE_OFFSET		, defaultTkkConfig.tkkModSelection );
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_X_MIDDLEPOINT_OFFSET	, defaultTkkConfig.xMid);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_X_MINPOINT_OFFSET		, defaultTkkConfig.xMin);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_X_MAXPOINT_OFFSET		, defaultTkkConfig.xMax);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_Y_MIDDLEPOINT_OFFSET	, defaultTkkConfig.yMid);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_Y_MINPOINT_OFFSET		, defaultTkkConfig.yMin);
-	HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_Y_MAXPOINT_OFFSET		, defaultTkkConfig.yMax);
-
-	for(i = 0; i < 32; i++)
-	{
-		HAL_FLASH_Program(FLASH_TYPEPROGRAM_HALFWORD, DEFAULT_CONFIG_DATA_DEBOUNCEFACTOR_BASE + i*CONFIG_FLASH_ADDR_INCREMENT, defaultTkkConfig.debounceFactor[i]);
-	}
-
-	HAL_FLASH_Lock();
-}
-
-uint16_t dataToWrite[] = {0x1234, 0xABCD, 0x5678, 0x9ABC, 0xDEAD};
-
-void functionFlashDefaultValue(void)
-{
-    uint32_t defaultValuePage = 127; // Bank 1 son sayfa
-
-    if (Flash_EraseSector(defaultValuePage) == HAL_OK)
+    if (pandora.canMessages.AKB.commandHERCULEPowerOnOff != pandora.canMessages.AKB.previous.commandHERCULEPowerOnOff)   // sadece değişim olduğunda girer
     {
-        Flash_Write16ToPage(defaultValuePage, dataToWrite, sizeof(dataToWrite)/2);
-
-        for (int i = 0; i < sizeof(dataToWrite)/2; i++)
+        if (pandora.canMessages.AKB.commandHERCULEPowerOnOff == 1)
         {
-            uint32_t addr = FLASH_BASE_BANK1 + (defaultValuePage * FLASH_PAGE_SIZE) + (i * 2);
-            uint16_t val = Flash_Read16(addr);
-            printf("Veri %d: 0x%04X\r\n", i, val);
+            UNIT_CONTROL(SERVO_POWER,ON);
+            pandora.states.HERCULEPowerOnOff = true;
         }
+        else
+        {
+        	UNIT_CONTROL(SERVO_POWER,OFF);
+        	pandora.states.HERCULEPowerOnOff = false;
+        }
+
+        pandora.canMessages.AKB.previous.commandHERCULEPowerOnOff = pandora.canMessages.AKB.commandHERCULEPowerOnOff;
+    }
+
+    if (pandora.canMessages.AKB.commandEOSPowerOnOff != pandora.canMessages.AKB.previous.commandEOSPowerOnOff)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandEOSPowerOnOff == 1)
+        {
+            UNIT_CONTROL(EOS_POWER,ON);
+            pandora.states.EOSPowerOnOff = true;
+        }
+        else
+        {
+        	UNIT_CONTROL(EOS_POWER,OFF);
+        	pandora.states.EOSPowerOnOff = false;
+        }
+
+        pandora.canMessages.AKB.previous.commandEOSPowerOnOff = pandora.canMessages.AKB.commandEOSPowerOnOff;
+    }
+
+    if (pandora.canMessages.AKB.commandKKBPowerOnOff != pandora.canMessages.AKB.previous.commandKKBPowerOnOff)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandKKBPowerOnOff == 1)
+        {
+            UNIT_CONTROL(KKU_POWER,ON);
+            pandora.states.KKBPowerOnOff = true;
+        }
+        else
+        {
+        	UNIT_CONTROL(KKU_POWER,OFF);
+        	pandora.states.KKBPowerOnOff = false;
+        }
+
+        pandora.canMessages.AKB.previous.commandKKBPowerOnOff = pandora.canMessages.AKB.commandKKBPowerOnOff;
+    }
+
+    if (pandora.canMessages.AKB.commandAKBPowerOnOff != pandora.canMessages.AKB.previous.commandAKBPowerOnOff)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandAKBPowerOnOff == 1)
+        {
+            UNIT_CONTROL(AKB_POWER,ON);
+            pandora.states.AKBPowerOnOff = true;
+        }
+        else
+        {
+        	UNIT_CONTROL(AKB_POWER,OFF);
+        	pandora.states.AKBPowerOnOff = false;
+        }
+
+        pandora.canMessages.AKB.previous.commandAKBPowerOnOff = pandora.canMessages.AKB.commandAKBPowerOnOff;
+    }
+
+    if (pandora.canMessages.AKB.commandSOLPowerOnOff != pandora.canMessages.AKB.previous.commandSOLPowerOnOff)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandSOLPowerOnOff == 1)
+        {
+            UNIT_CONTROL(SOLENOID_POWER,ON);
+            pandora.states.SOLPowerOnOff = true;
+        }
+        else
+        {
+        	UNIT_CONTROL(SOLENOID_POWER,OFF);
+        	pandora.states.SOLPowerOnOff = false;
+        }
+
+        pandora.canMessages.AKB.previous.commandSOLPowerOnOff = pandora.canMessages.AKB.commandSOLPowerOnOff;
+    }
+
+    if (pandora.canMessages.AKB.commandCHPowerOnOff != pandora.canMessages.AKB.previous.commandCHPowerOnOff)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandCHPowerOnOff == 1)
+        {
+            UNIT_CONTROL(COCKING_HANDLE_POWER,ON);
+            pandora.states.CHPowerOnOff = true;
+        }
+        else
+        {
+        	UNIT_CONTROL(COCKING_HANDLE_POWER,OFF);
+        	pandora.states.CHPowerOnOff = false;
+        }
+
+        pandora.canMessages.AKB.previous.commandCHPowerOnOff = pandora.canMessages.AKB.commandCHPowerOnOff;
+    }
+
+    if (pandora.canMessages.AKB.commandCockingHandleHome != pandora.canMessages.AKB.previous.commandCockingHandleHome)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandCockingHandleHome == 1)
+        {
+            functionCockingHandleGoHome();
+        }
+        else
+        {
+        	//NONE
+        }
+
+        pandora.canMessages.AKB.previous.commandCockingHandleHome = pandora.canMessages.AKB.commandCockingHandleHome;
+    }
+
+    if (pandora.canMessages.AKB.commandCockingHandleSafe != pandora.canMessages.AKB.previous.commandCockingHandleSafe)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandCockingHandleSafe == 1)
+        {
+            functionCockingHandleGoSafe();
+        }
+        else
+        {
+        	//NONE
+        }
+
+        pandora.canMessages.AKB.previous.commandCockingHandleSafe = pandora.canMessages.AKB.commandCockingHandleSafe;
+    }
+
+    if (pandora.canMessages.AKB.commandCockingHandleArm != pandora.canMessages.AKB.previous.commandCockingHandleArm)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandCockingHandleArm == 1)
+        {
+            functionCockingHandleGoArm();
+        }
+        else
+        {
+        	//NONE
+        }
+
+        pandora.canMessages.AKB.previous.commandCockingHandleArm = pandora.canMessages.AKB.commandCockingHandleArm;
+    }
+
+    if (pandora.canMessages.AKB.commandEmergencyStop != pandora.canMessages.AKB.previous.commandEmergencyStop)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandEmergencyStop == 1)
+        {
+        	UNIT_CONTROL(SERVO_POWER,OFF);
+        	UNIT_CONTROL(EOS_POWER,OFF);
+        	UNIT_CONTROL(KKU_POWER,OFF);
+        	UNIT_CONTROL(AKB_POWER,OFF);
+        	UNIT_CONTROL(SOLENOID_POWER,OFF);
+        	UNIT_CONTROL(COCKING_HANDLE_POWER,OFF);
+
+        	pandora.states.HERCULEPowerOnOff 	= false;
+        	pandora.states.EOSPowerOnOff 		= false;
+        	pandora.states.KKBPowerOnOff 		= false;
+        	pandora.states.AKBPowerOnOff 		= false;
+        	pandora.states.SOLPowerOnOff 		= false;
+        	pandora.states.CHPowerOnOff 		= false;
+        }
+        else
+        {
+        	//NONE
+        }
+
+        pandora.canMessages.AKB.previous.commandEmergencyStop = pandora.canMessages.AKB.commandEmergencyStop;
+    }
+
+    if (pandora.canMessages.AKB.commandWarMode != pandora.canMessages.AKB.previous.commandWarMode)   // sadece değişim olduğunda girer
+    {
+        if (pandora.canMessages.AKB.commandWarMode == 1)
+        {
+        	// DO SOMETHING
+        }
+        else
+        {
+        	//NONE
+        }
+
+        pandora.canMessages.AKB.previous.commandWarMode = pandora.canMessages.AKB.commandWarMode;
     }
 }
