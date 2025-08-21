@@ -1,4 +1,1 @@
-../Core/Src/functions.c:15:6:function_solenoid	24	static
-../Core/Src/functions.c:26:6:functionFlashGetVal	4	static
-../Core/Src/functions.c:31:6:functionFlashWrite	4	static
-../Core/Src/functions.c:36:6:functionCommandsCheck	8	static
+../Core/Src/functions.c:15:6:functionCommandsCheck	8	static

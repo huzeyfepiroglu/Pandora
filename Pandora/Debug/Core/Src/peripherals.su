@@ -1,1 +1,2 @@
-../Core/Src/peripherals.c:60:6:HAL_GPIO_EXTI_Callback	24	static
+../Core/Src/peripherals.c:91:6:functionReadFilteredDigitalInputs	16	static
+../Core/Src/peripherals.c:152:6:functionReadDigitalInputs	16	static

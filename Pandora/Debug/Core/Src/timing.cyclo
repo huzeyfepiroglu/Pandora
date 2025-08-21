@@ -1,3 +1,3 @@
 ../Core/Src/timing.c:50:6:HAL_TIM_PeriodElapsedCallback	12
-../Core/Src/timing.c:130:6:startTimeScanFlags	11
-../Core/Src/timing.c:184:6:clearTimeScanFlags	1
+../Core/Src/timing.c:136:6:startTimeScanFlags	11
+../Core/Src/timing.c:190:6:clearTimeScanFlags	1

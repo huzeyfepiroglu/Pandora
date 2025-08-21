@@ -1,3 +1,2 @@
-../Core/Src/power_management.c:24:6:funcPCIUnitSupply	1
-../Core/Src/power_management.c:40:6:functionMeasureVoltage	1
-../Core/Src/power_management.c:64:6:functionMeasureCurrent	1
+../Core/Src/power_management.c:33:6:functionMeasureVoltage	1
+../Core/Src/power_management.c:57:6:functionMeasureCurrent	1
