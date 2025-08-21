@@ -215,7 +215,7 @@ int main(void)
 
 	  if(_100msFlag)
 	  {
-		  //huzeyfe
+		  //huzeyfepiroglu
 		  functionMeasureVoltage();
 		  functionMeasureCurrent();
 
