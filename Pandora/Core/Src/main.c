@@ -215,6 +215,7 @@ int main(void)
 
 	  if(_100msFlag)
 	  {
+		  //huzeyfe
 		  functionMeasureVoltage();
 		  functionMeasureCurrent();
 
