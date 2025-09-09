@@ -11,6 +11,7 @@
 #include "timing.h"
 #include "tim.h"
 #include "cocking_handle_maingun.h"
+#include "peripherals.h"
 
 uint8_t configurableTime = 1;
 
@@ -53,6 +54,7 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
     {
         // 1 ms’de bir gelecek yer
         // örn: tick say, LED toggle, task scheduler vs.
+    	functionReadDigitalInputs();
     }
 
     if (htim->Instance == TIM4)   // şuan 50ms 1msye  ayarla

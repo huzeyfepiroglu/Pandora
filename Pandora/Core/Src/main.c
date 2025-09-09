@@ -213,6 +213,8 @@ int main(void)
     /* USER CODE BEGIN 3 */
 	  startTimeScanFlags();
 
+	  functionReadFilteredDigitalInputs();
+
 	  if(_100msFlag)
 	  {
 		  //huzeyfepiroglu

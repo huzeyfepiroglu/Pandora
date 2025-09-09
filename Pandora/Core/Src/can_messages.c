@@ -150,10 +150,10 @@ void eventAKB(uint32_t id, uint8_t *data)
 	{
 		pandora.canMessages.AKB.gunType						= (uint8_t)(GET_BIT(data[0],3) << 3) | (uint8_t)(GET_BIT(data[0],2) << 2) | (uint8_t)(GET_BIT(data[0],1) << 1) | (GET_BIT(data[0],0));
 		pandora.canMessages.AKB.gunID						= (uint8_t)(GET_BIT(data[0],7) << 7) | (uint8_t)(GET_BIT(data[0],6) << 6) | (uint8_t)(GET_BIT(data[0],5) << 5) | (GET_BIT(data[0],4));
-		pandora.canMessages.AKB.solenoidFastRpmHighByte				= data[1];
-		pandora.canMessages.AKB.solenoidFastRpmLowByte				= data[2];
-		pandora.canMessages.AKB.solenoidSlowRpmHighByte				= data[3];
-		pandora.canMessages.AKB.solenoidSlowRpmLowByte				= data[4];
+		pandora.canMessages.AKB.solenoidFastRpmHighByte		= data[1];
+		pandora.canMessages.AKB.solenoidFastRpmLowByte		= data[2];
+		pandora.canMessages.AKB.solenoidSlowRpmHighByte		= data[3];
+		pandora.canMessages.AKB.solenoidSlowRpmLowByte		= data[4];
 		pandora.canMessages.AKB.solenoidTime				= data[5];
 		pandora.canMessages.AKB.solenoidActiveTime			= data[6];
 		pandora.canMessages.AKB.solenoidPassiveTime			= data[7];
